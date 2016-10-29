@@ -1,0 +1,31 @@
+entity Person {
+    String firstName
+    String lastName
+    Boolean isPremium //is it needed ?? 
+    Zone livingZone oppositeTo inhabitants
+}
+
+entity Location {
+    Real x
+    Real y
+    Set(Zone) zones oppositeTo locations
+    Trip parentTrip oppositeTo childLocations
+}
+
+entity Zone {
+    Set(Person) inhabitants oppositeTo livingZone
+    Set(Location) locations oppositeTo zones
+}
+
+entity Trip {
+    LocalDateTime startDate
+    Real price
+    Set(Location) childLocations oppositeTo parentTrip   // use structure to represent sequence ??
+} 
+
+enum Role {  
+    SYSTEM
+    USER
+    PREMIUM_USER
+    ADMIN
+}
