@@ -1,7 +1,9 @@
 entity Person {
     String firstName
     String lastName
+    String password
     Boolean isPremium //is it needed ?? 
+    Role myRole
     Zone livingZone oppositeTo inhabitants
 }
 
