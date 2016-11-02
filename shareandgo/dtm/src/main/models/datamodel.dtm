@@ -1,13 +1,15 @@
 entity Person {
+    // Is there a unique attribute per user
     String firstName
     String lastName
     String password
-    Boolean isPremium //is it needed ?? 
+    Boolean isPremium //is it needed ?? I don't think so. This info is already stored in the Role
     Role myRole
     Zone livingZone oppositeTo inhabitants
 }
 
 entity Location {
+    String name
     Real x
     Real y
     Set(Zone) zones oppositeTo locations
@@ -22,7 +24,11 @@ entity Zone {
 entity Trip {
     LocalDateTime startDate
     Real price
+    // I don't think we need an explicit structure. 
+    // An association like this one should represent the sequence of locations
     Set(Location) childLocations oppositeTo parentTrip   // use structure to represent sequence ??
+    Person driver oppositeTo firstName 
+    Set(Person) passangers oppositeTo firstName
 } 
 
 enum Role {  
