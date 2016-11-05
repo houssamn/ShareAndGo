@@ -63,10 +63,10 @@
                     <datasource>${jndi.jdbc}</datasource> <!--TODO: write here your datasource JNDI name -->
                     <databaseName>${databasename}</databaseName> <!--TODO: write here your database name -->
                     <initialWindowExp>
-                        <!-- Write your initial window expression here-->
+                        Window::LoginWindow
                     </initialWindowExp>
                     <initialRoleExp>
-                        <!-- Write your initial role expression here-->
+                        Role::SYSTEM
                     </initialRoleExp>
                     <initialCallerExp>
                         <!-- Write your initial caller expression here (optional)-->

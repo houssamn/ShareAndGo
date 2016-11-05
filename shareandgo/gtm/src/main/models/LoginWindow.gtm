@@ -5,7 +5,7 @@ Window LoginWindow {
         String text := ['Login']
     }   
 
-    TextField FName_TF {
+    TextField Username_TF {
         String text := [null]
     }
 
@@ -17,4 +17,52 @@ Window LoginWindow {
         String text := [null]
     }
 
+    Button Login_B {
+        String text := ['Login']
+        Person loggedUser
+        event onClick {
+            //Authenticate User
+            loggedUser := [Person.allInstances()->any(c| c.username = $Username_TF.text$
+                                and c.password = $Password_TF.text$ )]
+
+            if [not($loggedUser$.oclIsUndefined())]{
+                notification (['Message'], ['Login Successful.'], [500])
+            }else {
+                notification (['Message'], ['Login Failed.'], [500])
+            }
+        }
+    }
+
+    Button Register_B {
+        String text := ['Register']
+        event onClick {
+            //Register User
+        }
+    }
+
+    Button Init_B {
+        String text := ['Init']
+        event onClick {
+
+            if [Person.allInstances()->isEmpty()] {
+                
+                //Create User 1
+                person1 := new Person
+                [$person1$.firstName] := ['Petar']
+                [$person1$.lastName] := ['Ivanov']
+                [$person1$.username] := ['pivanov']
+                [$person1$.password] := ['123']
+                [$person1$.myRole] := [Role::USER]
+                
+                //Create User 2
+                person2 := new Person
+                [$person2$.firstName] := ['Houssam']
+                [$person2$.lastName] := ['Naous']
+                [$person2$.username] := ['hnaous']
+                [$person2$.password] := ['123']
+                [$person2$.myRole] := [Role::USER]
+
+            }
+        }
+    }
 }

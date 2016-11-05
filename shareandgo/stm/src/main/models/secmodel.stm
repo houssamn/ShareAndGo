@@ -1,5 +1,30 @@
 role SYSTEM {
+    //System Has Full Access on Everything For Now ...
+
     Person {
         fullAccess
     }
+
+    Location {
+        fullAccess
+    }
+
+    Zone {
+        fullAccess
+    }
+
+    Trip {
+        fullAccess
+    }
+}
+
+role USER {
+}
+
+
+role PREMIUM_USER {
+}
+
+
+role ADMIN {
 }
