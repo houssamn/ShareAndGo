@@ -21,6 +21,58 @@ role SYSTEM {
 role USER {
     Person {
         read (firstName), read (lastName), read (username)
+            
+        read (livingZone) constrainedBy [ caller = self ]
+
+        update (firstName), update (lastName), update (password),
+        update (livingZone) constrainedBy [ caller = self ]
+
+        add (asPassenger) constrainedBy [ caller = self and
+            not self.asPassenger->includes(target) and 
+            not target.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() 
+        ]
+
+        add (complaintFrom) constrainedBy [ target.complaintOwner = caller and not
+            (caller.asPassenger->intersection(target.complaintTarget.asPassenger->
+            union(target.complaintTarget.asDriver))->union(caller.asDriver->
+            intersection(target.complaintTarget.asPassenger)))->asSet()->isEmpty() ]
+    }
+    
+    Zone {
+        read
+    }
+
+    Location {
+        read
+    }
+    
+    Trip {
+        read constrainedBy [ not self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() ]
+
+        add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
+        and self.childLocations->any(v1| not v1.zones->includes(caller.livingZone))->asSet()->isEmpty()]
+    }
+
+    Complaint {
+        update (complaintOwner) constrainedBy [ value = caller and 
+            not self.isCreated
+        ]
+
+        update (complaintTarget) constrainedBy [
+            self.complaintOwner = caller and
+            not self.isCreated and 
+            not value.asPassenger->intersection(caller.asPassenger->union(caller.asDriver))->
+            union(value.asDriver->intersection(caller.asPassenger))->asSet().isEmpty()
+        ]
+
+        update (text) constrainedBy [
+            not self.isCreated nad
+            self.complaintOwner = caller
+        ]
+
+        update (isCreated)
+
+        create 
     }
 }
 

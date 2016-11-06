@@ -6,7 +6,7 @@ entity Person {
     Role myRole
     Zone livingZone oppositeTo inhabitants
     Set(Trip) asDriver oppositeTo driver
-    Set(Trip) asPassenger oppositeTo passenger
+    Set(Trip) asPassenger oppositeTo passengers
     Set(Complaint) complaintFrom oppositeTo complaintOwner
     Set(Complaint) complaintAbout oppositeTo complaintTarget
 }
@@ -29,10 +29,11 @@ entity Trip {
     Real price
     Set(Location) childLocations oppositeTo parentTrip
     Person driver oppositeTo asDriver
-    Set(Person) passenger oppositeTo asPassenger
+    Set(Person) passengers oppositeTo asPassenger
 } 
 
 entity Complaint {
+    Boolean isCreated
     String text
     Person complaintOwner oppositeTo complaintFrom
     Person complaintTarget oppositeTo complaintAbout
