@@ -19,6 +19,9 @@ role SYSTEM {
 }
 
 role USER {
+    Person {
+        read (firstName), read (lastName), read (username)
+    }
 }
 
 

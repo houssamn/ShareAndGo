@@ -1,11 +1,14 @@
 entity Person {
-    // Is there a unique attribute per user
     String firstName
     String lastName
     String username
     String password
     Role myRole
     Zone livingZone oppositeTo inhabitants
+    Set(Trip) asDriver oppositeTo driver
+    Set(Trip) asPassenger oppositeTo passenger
+    Set(Complaint) complaintFrom oppositeTo complaintOwner
+    Set(Complaint) complaintAbout oppositeTo complaintTarget
 }
 
 entity Location {
@@ -25,9 +28,15 @@ entity Trip {
     LocalDateTime startDate
     Real price
     Set(Location) childLocations oppositeTo parentTrip
-    Person driver //oppositeTo firstName
-    Set(Person) passengers //oppositeTo firstName
+    Person driver oppositeTo asDriver
+    Set(Person) passenger oppositeTo asPassenger
 } 
+
+entity Complaint {
+    String text
+    Person complaintOwner oppositeTo complaintFrom
+    Person complaintTarget oppositeTo complaintAbout
+}
 
 enum Role {  
     SYSTEM
