@@ -62,11 +62,11 @@ role USER {
             self.complaintOwner = caller and
             not self.isCreated and 
             not value.asPassenger->intersection(caller.asPassenger->union(caller.asDriver))->
-            union(value.asDriver->intersection(caller.asPassenger))->asSet().isEmpty()
+            union(value.asDriver->intersection(caller.asPassenger))->asSet()->isEmpty()
         ]
 
         update (text) constrainedBy [
-            not self.isCreated nad
+            not self.isCreated and
             self.complaintOwner = caller
         ]
 
@@ -82,4 +82,34 @@ role PREMIUM_USER {
 
 
 role ADMIN {
+    Person {
+        read (complaintAbout)
+    }
+
+    Location {
+        create
+
+        read 
+
+        update(name), update(x), update(y)
+
+        //add the zone only if the location is not already in that zone
+        add(zones) constrainedBy [ self.zones->excludes(target) ]
+    }
+
+    Zone {
+        //TODO is an admin allowed to change a person's living zone?
+        create
+
+        read 
+        
+        update (zname)
+
+        //add the location only if it is not already in the zone
+        add(locations) constrainedBy [ self.locations->excludes(target) ]
+    }
+
+    Trip {
+        read
+    }
 }

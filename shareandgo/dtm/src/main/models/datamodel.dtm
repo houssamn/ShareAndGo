@@ -20,6 +20,7 @@ entity Location {
 }
 
 entity Zone {
+    String zname
     Set(Person) inhabitants oppositeTo livingZone
     Set(Location) locations oppositeTo zones
 }

@@ -1,0 +1,99 @@
+    Window RegisterWindow {
+        Label First_Name_L {
+            String text := ['First name']
+        }   
+
+        TextField First_Name_TF {
+            String text := [null]
+        }
+
+        Label Surname_L {
+            String text := ['Surname']
+        }
+
+        TextField Surname_TF {
+            String text := [null]
+        }
+
+        Label Username_L {
+            String text := ['Username']
+        }
+
+        TextField Username_TF {
+            String text := [null]
+        }
+
+        Label Password_L {
+            String text := ['Password']
+        }
+
+        PasswordField Password_TF {
+            String text := [null]
+        }
+
+        Label Zone_L {
+            String text := ['Living Zone']
+        }
+
+        ComboBox zoneCB {
+            Set(Zone) rows := [Zone.allInstances()]
+            Zone selected := [null]
+
+            Label doctorNameLab {
+                String text := [$RegisterWindow.zoneCB.row$.zname]
+            }
+        }
+
+        Button register_B {
+            String text := ['Create']
+            event onClick {
+                if [$RegisterWindow.zoneCB.selected$.oclIsUndefined()] {
+                    notification([''],['Error. A zone should be selected'],[500])
+                }
+                else {
+                    if [$RegisterWindow.First_Name_TF.text$.oclIsUndefined()] {
+                        notification([''],['Please provide your first name'],[500])
+                    }
+                    else {
+                        if [$RegisterWindow.Surname_TF.text$.oclIsUndefined()] {
+                            notification([''],['Please provide your surname'],[500])
+                        }
+                        else {
+                            if [$RegisterWindow.Username_TF.text$.oclIsUndefined()] {
+                                notification([''],['Please provide a username'],[500])
+                            } 
+                            else {
+                                if [$RegisterWindow.Password_TF.text$.oclIsUndefined()] {
+                                    notification([''],['Please provide a password'],[500])
+                                } 
+                                else {
+                                    try {
+                                         person := new Person
+                                         [$person$.firstName] := [$RegisterWindow.First_Name_TF.text$]
+                                         [$person$.lastName] := [$RegisterWindow.Surname_TF.text$]
+                                         [$person$.username] := [$RegisterWindow.Username_TF.text$]
+                                         [$person$.password] := [$RegisterWindow.Password_TF.text$]
+                                         [$person$.livingZone] := [$RegisterWindow.zoneCB.selected$]
+
+
+                                        notification([''], ['Profile Created Successfully'], [500])
+                                        back
+                                    }
+                                    catch (SecurityException) {
+                                        notification([''], ['You cannot create a profile'], [500])
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Button back_B {
+            String text := ['Back']
+            event onClick {
+                back
+            }
+        }
+    }

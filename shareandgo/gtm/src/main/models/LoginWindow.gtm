@@ -36,7 +36,7 @@ Window LoginWindow {
     Button Register_B {
         String text := ['Register']
         event onClick {
-            //Register User
+            open RegisterWindow()
         }
     }
 
@@ -62,6 +62,17 @@ Window LoginWindow {
                 [$person2$.password] := ['123']
                 [$person2$.myRole] := [Role::USER]
 
+            }
+
+            if [Zone.allInstances()->isEmpty()] {
+                
+                //Create Zone 1
+                zone1 := new Zone
+                [$zone1$.zname] := ['Zurich']
+                
+                //Create Zone 2
+                zone2 := new Zone
+                [$zone2$.zname] := ['Basel']
             }
         }
     }
