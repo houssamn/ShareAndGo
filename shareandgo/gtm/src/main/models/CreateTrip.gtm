@@ -1,5 +1,8 @@
 Window CreateTrip {
+   Person caller
+   String text := ['Create Trip']
 
-
-
+    Label CreateTrip_L {
+        String text := ['Create Trip']
+    }
 }

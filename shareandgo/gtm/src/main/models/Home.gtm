@@ -2,6 +2,11 @@ Window Home {
     Person caller
     String text := ['Home']
 
+
+    Label userInfo_L {
+        String text:= ['User Info']
+    }
+    
     Table userInfo {
         Set(Person) rows := [$Home.caller$->asSet()]
 
@@ -28,8 +33,112 @@ Window Home {
                     }
                 }
             }
+            ['Username'] : Label username {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$Home.caller$.username]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            
+            ['Zone'] : Label zone {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$Home.caller$.livingZone.zname]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
         }
     }
+
+
+    Label allUsers_L {
+        String text:= ['All Users']
+    }
+    
+    Table allUsers {
+        Set(Person) rows := [Person.allInstances()->any(v1| not (v1.username = $Home.caller$.username ) )->asSet()] //Hide Caller 
+        columns {
+            ['firstName'] : Label fName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$Home.allUsers.row$.firstName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['lastName'] : Label lastName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$Home.allUsers.row$.lastName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+        }
+        
+    }
+
+
+    Label allTrips_L {
+        String text := ['All Trips']
+    }
+
+    Table allTrips {
+        Set(Trip) rows := [Trip.allInstances()->asSet()]
+        columns {
+            ['driver']  : Label driver {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$Home.allTrips.row$.driver.firstName  + " " + $Home.allTrips.row$.driver.lastName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+        }
+    }
+
+    Button CreateTrip_B {
+        String text := ['Create Trip']
+        
+        event onClick {
+            //Open Create Trip Window
+            if[$Home.caller$.myRole = Role::PREMIUM_USER]{
+                open CreateTrip(caller:[$Home.caller$], role:[$Home.caller$.myRole])
+            }else{
+                notification (['Message'], ['Only A Premium User Can Create Trips'], [1000])
+            }
+        }
+
+    }
+
+    Button Report_B {
+        String text := ['Report Misbehaviour']
+        event onClick {
+            notification (['Message'] , ['Coming Soon ... '] , [500])
+        }
+    }
+
+    
 
 
 }

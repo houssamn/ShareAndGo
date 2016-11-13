@@ -22,6 +22,12 @@
                         </ns1:entry>
                         <ns1:entry>
                             <ns1:line-layout orientation="vertical" ns1:height="auto" ns1:width="100%">
+                                <ns1:entry>
+                                    <ns1:widget ns1:id="CreateTrip_L" ns1:width="100%" ns1:height="23px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
                             </ns1:line-layout>
                         </ns1:entry>
                         <ns1:entry expand-ratio="1">

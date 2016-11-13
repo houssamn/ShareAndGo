@@ -61,7 +61,7 @@ Window LoginWindow {
                 [$person2$.lastName] := ['Naous']
                 [$person2$.username] := ['hnaous']
                 [$person2$.password] := ['123']
-                [$person2$.myRole] := [Role::USER]
+                [$person2$.myRole] := [Role::PREMIUM_USER]
 
             }
 

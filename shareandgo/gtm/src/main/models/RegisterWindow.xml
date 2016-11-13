@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ns1:window-layout
-    ns1:id="Home"
+    ns1:id="RegisterWindow"
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns:ns1='http://actiongui.org/schemes/ag-layout/2.4'
     xsi:schemaLocation='http://actiongui.org/schemes/ag-layout/2.4 http://actiongui.org/schemes/ag-layout/2.4/schema.xsd'>
@@ -23,73 +23,73 @@
                         <ns1:entry>
                             <ns1:line-layout orientation="vertical" ns1:height="auto" ns1:width="100%">
                                 <ns1:entry>
-                                    <ns1:widget ns1:id="userInfo_L" ns1:width="100%" ns1:height="23px"/>
+                                    <ns1:widget ns1:id="First_Name_L" ns1:width="100%" ns1:height="23px"/>
                                 </ns1:entry>
                                 <ns1:entry>
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
                                 </ns1:entry>
                                 <ns1:entry>
-                                    <ns1:table ns1:id="userInfo" ns1:width="100%" ns1:height="100px">
-                                        <ns1:column>
-                                            <ns1:widget ns1:id="zone" ns1:width="100%" ns1:height="23px"/>
-                                        </ns1:column>
-                                        <ns1:column>
-                                            <ns1:widget ns1:id="username" ns1:width="100%" ns1:height="23px"/>
-                                        </ns1:column>
-                                        <ns1:column>
-                                            <ns1:widget ns1:id="fName" ns1:width="100%" ns1:height="23px"/>
-                                        </ns1:column>
-                                        <ns1:column>
-                                            <ns1:widget ns1:id="lastName" ns1:width="100%" ns1:height="23px"/>
-                                        </ns1:column>
-                                    </ns1:table>
+                                    <ns1:widget ns1:id="First_Name_TF" ns1:width="100%" ns1:height="auto"/>
                                 </ns1:entry>
                                 <ns1:entry>
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
                                 </ns1:entry>
                                 <ns1:entry>
-                                    <ns1:widget ns1:id="allUsers_L" ns1:width="100%" ns1:height="23px"/>
+                                    <ns1:widget ns1:id="Surname_L" ns1:width="100%" ns1:height="23px"/>
                                 </ns1:entry>
                                 <ns1:entry>
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
                                 </ns1:entry>
                                 <ns1:entry>
-                                    <ns1:table ns1:id="allUsers" ns1:width="100%" ns1:height="100px">
-                                        <ns1:column>
-                                            <ns1:widget ns1:id="fName" ns1:width="100%" ns1:height="23px"/>
-                                        </ns1:column>
-                                        <ns1:column>
-                                            <ns1:widget ns1:id="lastName" ns1:width="100%" ns1:height="23px"/>
-                                        </ns1:column>
-                                    </ns1:table>
+                                    <ns1:widget ns1:id="Surname_TF" ns1:width="100%" ns1:height="auto"/>
                                 </ns1:entry>
                                 <ns1:entry>
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
                                 </ns1:entry>
                                 <ns1:entry>
-                                    <ns1:widget ns1:id="allTrips_L" ns1:width="100%" ns1:height="23px"/>
+                                    <ns1:widget ns1:id="Username_L" ns1:width="100%" ns1:height="23px"/>
                                 </ns1:entry>
                                 <ns1:entry>
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
                                 </ns1:entry>
                                 <ns1:entry>
-                                    <ns1:table ns1:id="allTrips" ns1:width="100%" ns1:height="100px">
-                                        <ns1:column>
-                                            <ns1:widget ns1:id="driver" ns1:width="100%" ns1:height="23px"/>
-                                        </ns1:column>
-                                    </ns1:table>
+                                    <ns1:widget ns1:id="Username_TF" ns1:width="100%" ns1:height="auto"/>
                                 </ns1:entry>
                                 <ns1:entry>
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
                                 </ns1:entry>
                                 <ns1:entry>
-                                    <ns1:widget ns1:id="CreateTrip_B" ns1:width="100%" ns1:height="auto"/>
+                                    <ns1:widget ns1:id="Password_L" ns1:width="100%" ns1:height="23px"/>
                                 </ns1:entry>
                                 <ns1:entry>
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
                                 </ns1:entry>
                                 <ns1:entry>
-                                    <ns1:widget ns1:id="Report_B" ns1:width="100%" ns1:height="auto"/>
+                                    <ns1:widget ns1:id="Password_TF" ns1:width="100%" ns1:height="auto"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:widget ns1:id="Zone_L" ns1:width="100%" ns1:height="23px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:widget ns1:id="zoneCB" ns1:width="100%" ns1:height="auto"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:widget ns1:id="register_B" ns1:width="100%" ns1:height="auto"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:widget ns1:id="back_B" ns1:width="100%" ns1:height="auto"/>
                                 </ns1:entry>
                                 <ns1:entry>
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>

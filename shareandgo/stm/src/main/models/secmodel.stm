@@ -27,7 +27,7 @@ role USER {
     Person {
         read (firstName), read (lastName), read (username)
             
-        read (livingZone) constrainedBy [ caller = self ]
+        read (livingZone), read (myRole) constrainedBy [ caller = self ]
 
         update (firstName), update (lastName), update (password),
         update (livingZone) constrainedBy [ caller = self ]
@@ -86,7 +86,7 @@ role PREMIUM_USER {
     Person {
         read (firstName), read (lastName), read (username)
             
-        read (livingZone) constrainedBy [ caller = self ]
+        read (livingZone), read(myRole) constrainedBy [ caller = self ]
 
         update (firstName), update (lastName), update (password),
         update (livingZone) constrainedBy [ caller = self ]
