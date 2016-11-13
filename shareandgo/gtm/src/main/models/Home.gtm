@@ -1,0 +1,35 @@
+Window Home {
+    Person caller
+    String text := ['Home']
+
+    Table userInfo {
+        Set(Person) rows := [$Home.caller$->asSet()]
+
+        columns {
+            ['firstName'] : Label fName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$Home.caller$.firstName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['lastName'] : Label lastName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$Home.caller$.lastName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+
+}

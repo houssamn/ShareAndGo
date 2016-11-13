@@ -27,6 +27,7 @@ Window LoginWindow {
 
             if [not($loggedUser$.oclIsUndefined())]{
                 notification (['Message'], ['Login Successful.'], [500])
+                open Home(caller:[$loggedUser$], role:[$loggedUser$.myRole])
             }else {
                 notification (['Message'], ['Login Failed.'], [500])
             }
