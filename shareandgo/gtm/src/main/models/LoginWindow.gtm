@@ -65,16 +65,32 @@ Window LoginWindow {
 
             }
 
-            if [Zone.allInstances()->isEmpty()] {
-                
-                //Create Zone 1
-                zone1 := new Zone
-                [$zone1$.zname] := ['Zurich']
-                
-                //Create Zone 2
-                zone2 := new Zone
-                [$zone2$.zname] := ['Basel']
+            if [Location.allInstances()->isEmpty()] {
+
+                        //Create Zone 1
+                    zone1 := new Zone
+                    [$zone1$.zname] := ['Zurich']
+
+                    //Create Zone 2
+                    zone2 := new Zone
+                    [$zone2$.zname] := ['Basel']
+
+                   l1 := new Location
+                   [$l1$.name] := ['Meierhofplatz']
+                   [$l1$.zones] += [$zone1$]
+                   [$l1$.zones] += [$zone2$]
+
+                   l2 := new Location
+                   [$l2$.name] := ['Honggerberg']
+                   [$l2$.zones] += [$zone1$]
+                   
+                   l3 := new Location
+                   [$l3$.name] := ['Central']
+                   [$l3$.zones] += [$zone1$]
+
             }
+
+
         }
     }
 }

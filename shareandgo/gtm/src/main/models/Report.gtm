@@ -1,0 +1,37 @@
+Window Report {
+    Person caller
+
+    Label SelectUser_L {
+        String text := ['Select A User ...']
+    }
+
+    ComboBox UsersCB {
+        Set(Person) rows := [Person.allInstances()]
+        Person selected := [null]
+
+        Label FullName {
+            String text := [$Report.UsersCB.row$.firstName + " "  + $Report.UsersCB.row$.lastName ]
+        }
+    }
+    
+    Label TypeMessage_L {
+        String text := ['Type A Complaint ...']
+    }
+
+    TextField Complaint_TF {
+        String text := [null]
+    }
+    
+    Button Submit_B {
+        String text := ['Submit']
+
+        event onClick {
+            //Create Complaint
+
+            //Add Details
+        }
+
+    }
+
+
+}

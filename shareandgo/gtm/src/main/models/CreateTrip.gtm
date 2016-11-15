@@ -1,8 +1,63 @@
 Window CreateTrip {
    Person caller
+   Trip tripToCreate
+
    String text := ['Create Trip']
 
     Label CreateTrip_L {
         String text := ['Create Trip']
     }
+
+    Label SelectZone_L {
+        String text := ['Please Select A Zone']
+    }
+
+    ComboBox ZoneCB {
+        Set(Zone) rows := [Zone.allInstances()]
+        Zone selected := [null]
+
+        Label ZoneName {
+            String text := [$CreateTrip.ZoneCB.row$.zname]
+        }
+
+        event onClick { //should be onChange but onChange doesn't work ??
+            reevaluate CreateTrip.LocationsCB.rows
+            notification (['Message'], ['Clicked'], [500])
+        }
+
+    }
+
+    Label AddLocation_L {
+        String text := ['Available Locations']
+    }
+
+    ComboBox LocationsCB {
+        Set(Location) rows := [$CreateTrip.ZoneCB.selected$.locations]
+        Location selected := [null]
+
+        Label LocationName {
+            String text := [$CreateTrip.LocationsCB.row$.name]
+        }
+
+    }
+
+    Button AddToTrip_B {
+        String text:= ['Add To Trip']
+
+        event onClick {
+            tripToCreate := new Trip
+        }
+
+    }
+
+
+    //TODO: Table of Locations Till Now (Loc name  &  Zone)
+    
+
+
+    //TODO: Clear Button && Remove Selected From List Button
+    
+
+    //TODO: Create Trip Button [Finalize]
+
 }

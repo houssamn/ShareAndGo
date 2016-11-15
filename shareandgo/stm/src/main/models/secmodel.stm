@@ -82,7 +82,7 @@ role USER {
 }
 
 
-role PREMIUM_USER {
+role PREMIUM_USER { 
     Person {
         read (firstName), read (lastName), read (username)
             
@@ -117,8 +117,7 @@ role PREMIUM_USER {
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
         and not self.childLocations->any(k|k.zones->includes(caller.livingZone))->asSet()->isEmpty() ]
 
-        create // To Be Added Later
-
+        create 
 
     }
 
@@ -141,6 +140,8 @@ role PREMIUM_USER {
         update (isCreated)
 
         create 
+
+        //add himself as driver , update startDate, add(childLocations) under constraint, update price, update created[add to data model]
     }
 }
 

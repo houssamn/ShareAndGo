@@ -134,7 +134,7 @@ Window Home {
     Button Report_B {
         String text := ['Report Misbehaviour']
         event onClick {
-            notification (['Message'] , ['Coming Soon ... '] , [500])
+            open Report(caller:[$Home.caller$], role:[$Home.caller$.myRole])
         }
     }
 
