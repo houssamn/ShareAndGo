@@ -26,6 +26,7 @@ entity Zone {
 }
 
 entity Trip {
+    Boolean isCreated
     LocalDateTime startDate
     Real price
     Set(Location) childLocations oppositeTo parentTrip

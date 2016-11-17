@@ -33,5 +33,10 @@ Window Report {
 
     }
 
-
+    Button back_B {
+            String text := ['Back']
+            event onClick {
+                back
+            }
+    }
 }

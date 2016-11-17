@@ -20,11 +20,15 @@ Window CreateTrip {
             String text := [$CreateTrip.ZoneCB.row$.zname]
         }
 
+        
+
+    }
+
+    //This Button is Added because the onChange property for the ZoneCB does not work
+    Button ChangeZoneSelection { 
         event onClick { //should be onChange but onChange doesn't work ??
             reevaluate CreateTrip.LocationsCB.rows
-            notification (['Message'], ['Clicked'], [500])
         }
-
     }
 
     Label AddLocation_L {
@@ -59,5 +63,12 @@ Window CreateTrip {
     
 
     //TODO: Create Trip Button [Finalize]
+
+    Button back_B {
+            String text := ['Back']
+            event onClick {
+                back
+            }
+    }
 
 }
