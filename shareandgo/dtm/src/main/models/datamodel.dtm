@@ -5,6 +5,7 @@ entity Person {
     String password
     Role myRole
     Zone livingZone oppositeTo inhabitants
+    Boolean isBanned
     Set(Trip) asDriver oppositeTo driver
     Set(Trip) asPassenger oppositeTo passengers
     Set(Complaint) complaintFrom oppositeTo complaintOwner
