@@ -65,7 +65,35 @@
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
                                 </ns1:entry>
                                 <ns1:entry>
-                                    <ns1:widget ns1:id="back_B" ns1:width="100%" ns1:height="auto"/>
+                                    <ns1:widget ns1:id="LocationsTable_L" ns1:width="100%" ns1:height="23px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:table ns1:id="LocationsTillNow" ns1:width="100%" ns1:height="100px">
+                                        <ns1:column>
+                                            <ns1:widget ns1:id="locationName" ns1:width="100%" ns1:height="23px"/>
+                                        </ns1:column>
+                                    </ns1:table>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:widget ns1:id="RemoveSelected_B" ns1:width="100%" ns1:height="auto"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:widget ns1:id="Confirm_B" ns1:width="100%" ns1:height="auto"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:widget ns1:id="Back_B" ns1:width="100%" ns1:height="auto"/>
                                 </ns1:entry>
                                 <ns1:entry>
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>

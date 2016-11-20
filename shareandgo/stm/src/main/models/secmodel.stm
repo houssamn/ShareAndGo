@@ -111,13 +111,23 @@ role PREMIUM_USER {
     }
     
     Trip {
-        read constrainedBy [ not self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() 
-                             or not self.childLocations->any(v2|v2.zones->any(zn|not (zn.locations->intersection(caller.livingZone.locations)->asSet()->isEmpty()))->asSet()->isEmpty())->asSet()->isEmpty()     ]
+        //read constrainedBy [ not self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() 
+          //                   or not self.childLocations->any(v2|v2.zones->any(zn|not (zn.locations->intersection(caller.livingZone.locations)->asSet()->isEmpty()))->asSet()->isEmpty())->asSet()->isEmpty()     ]
+
+        read
 
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
         and not self.childLocations->any(k|k.zones->includes(caller.livingZone))->asSet()->isEmpty() ]
 
         create 
+
+        add(childLocations) 
+
+        remove(childLocations)
+
+        update(driver) 
+
+        delete
 
     }
 

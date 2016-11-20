@@ -19,13 +19,11 @@ Window CreateTrip {
         Label ZoneName {
             String text := [$CreateTrip.ZoneCB.row$.zname]
         }
-
-        
-
     }
 
     //This Button is Added because the onChange property for the ZoneCB does not work
     Button ChangeZoneSelection { 
+        String text := ['Confirm Zone Change']
         event onClick { //should be onChange but onChange doesn't work ??
             reevaluate CreateTrip.LocationsCB.rows
         }
@@ -47,26 +45,70 @@ Window CreateTrip {
 
     Button AddToTrip_B {
         String text:= ['Add To Trip']
-
         event onClick {
-            tripToCreate := new Trip
+               if [not $CreateTrip.LocationsCB.selected$.oclIsUndefined()] {
+                    [$CreateTrip.tripToCreate$.childLocations] += [$CreateTrip.LocationsCB.selected$]
+                    reevaluate CreateTrip.LocationsTillNow.rows
+               }else {
+                  notification(['Message'], ['Please Select A Location'], [500])
+               }
         }
 
     }
 
 
     //TODO: Table of Locations Till Now (Loc name  &  Zone)
-    
+    Label LocationsTable_L {
+        String text := ['Locations Till Now']
+    }
 
 
-    //TODO: Clear Button && Remove Selected From List Button
-    
+    Table LocationsTillNow {
+    Set(Location) rows := [$CreateTrip.tripToCreate$.childLocations->asSet()]
+    Location selected := [null]
+         columns {
+            ['location']  : Label locationName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$CreateTrip.LocationsTillNow.row$.name]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    //Remove Selected Location From List Button
+    Button RemoveSelected_B {
+        String text := ['Remove Selected From List']
+        event onClick {
+               if [not $CreateTrip.LocationsTillNow.selected$->oclIsUndefined()] {
+                [$CreateTrip.tripToCreate$.childLocations] -= [$CreateTrip.LocationsTillNow.selected$]
+                reevaluate CreateTrip.LocationsTillNow.rows
+               }else {
+                notification(['Message'], ['No Location Selected'], [500])
+               }
+        }
+    }
+
 
     //TODO: Create Trip Button [Finalize]
+    Button Confirm_B {
+        String text := ['Confirm']
+        event onClick {
+            back
+        }
+    }
 
-    Button back_B {
+
+    //TODO: Should Delete the current trip
+    Button Back_B {
             String text := ['Back']
             event onClick {
+                delete [$CreateTrip.tripToCreate$]
                 back
             }
     }
