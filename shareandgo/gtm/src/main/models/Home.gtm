@@ -94,6 +94,40 @@ Window Home {
         
     }
 
+    Label ZoneInfo_L {
+        String text := ['Zone Info']
+    }
+
+    Table ZoneInfo{
+        Set(Zone) rows := [Zone.allInstances()->asSet()]
+        columns {
+            ['Zone'] : Label zone {
+                String text
+                event onView(text) {
+                    try {
+                        text := [$ZoneInfo.row$.zname]
+                    }catch(SecurityException){
+                        text := ['****']
+                    }
+                }
+            }
+
+            ['Locations'] : Label locs {
+                String text
+                event onView(text) {
+                    try {
+                        text := [''] 
+                        foreach child in [$Home.ZoneInfo.row$.locations] { 
+                             text := [$text$ + $child$.name + ", "]
+                        }
+                    }catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
 
     Label allTrips_L {
         String text := ['All Trips']
@@ -101,8 +135,21 @@ Window Home {
 
     Table allTrips {
         Set(Trip) rows := [Trip.allInstances()->asSet()]
+        Trip selected := [null]
         columns {
-            ['driver']  : Label driver {
+            ['Start Date'] : Label startDate {
+                String text
+                event onView(text) {
+                    try {
+                        text := [$Home.allTrips.row$.startDate.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+            ['Driver']  : Label driver {
                 String text
                 event onView (text) {
                     try {
@@ -114,8 +161,69 @@ Window Home {
                 }
             }
 
+            ['Price'] : Label price {
+                String text
+                event onView(text) {
+                    try {
+                        text := [$Home.allTrips.row$.price.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+            //Show Locations
+            ['Locations'] : Label locs {
+                String text
+                event onView(text) {
+                    try {
+                        text := [''] //[$Home.allTrips.row$.childLocations].
+                        foreach child in [$Home.allTrips.row$.childLocations] { 
+                             text := [$text$ + $child$.name + ", "]
+                        }
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            //Show Passengers
+            ['Passengers'] : Label passengers {
+                String text
+                event onView(text) {
+                    try {
+                        text := [''] 
+                        foreach passenger in [$Home.allTrips.row$.passengers] { 
+                             text := [$text$ + $passenger$.firstName + ", "]
+                        }
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
         }
     }
+
+    
+    Button JoinTrip_B {
+        String text := ['Join Selected Trip']
+        event onClick {
+            if [not ($Home.allTrips.selected$ = null)] {
+                try {
+                    [$Home.allTrips.selected$.passengers] += [$Home.caller$]
+                    notification(['Message'], ['Successfully Joined Trip'], [500])
+                }catch(SecurityException){
+                    notification(['Message'], ['You Cannot Join This Trip'], [500])
+                }
+            }else{
+                notification(['Message'], ['You have to SELECT one to JOIN one .. :/'], [500])
+            }
+
+        }
+    }
+
 
     Button CreateTrip_B {
         String text := ['Create Trip']
@@ -124,6 +232,7 @@ Window Home {
             //Open Create Trip Window
             if[$Home.caller$.myRole = Role::PREMIUM_USER]{
                 t := new Trip
+                [$t$.isCreated] := [false]
                 [$t$.driver] := [$Home.caller$]
                 open CreateTrip(caller:[$Home.caller$], role:[$Home.caller$.myRole], tripToCreate:[$t$])
             }else{

@@ -94,15 +94,39 @@ Window CreateTrip {
         }
     }
 
+    Label EnterPrice_L {
+        String text := ['Enter A Price']
+    }
+
+    TextField Price_TF {
+        String text := [null]
+    }
+
+    Label ChooseDate_L {
+        String text := ['Choose A Start Date']
+    }
+   
+    DateField Chooser_DF {
+        LocalDateTime selected := [null]
+    }
 
     //TODO: Create Trip Button [Finalize]
     Button Confirm_B {
         String text := ['Confirm']
         event onClick {
-            back
+            //Do Preliminary Checks ( Maybe in Security Model)
+
+            //Set Price Value
+            if [$Price_TF.text$ = null] {
+                notification(['Message'], ['You forgot to enter a price buddy ..'] , [500])
+            }else{
+              [$CreateTrip.tripToCreate$.price] := [$Price_TF.text$.toReal()] 
+              [$CreateTrip.tripToCreate$.startDate] := [$Chooser_DF.selected$] 
+              [$CreateTrip.tripToCreate$.isCreated] := [true] // This makes it visible to other users now
+              back
+            }
         }
     }
-
 
     //TODO: Should Delete the current trip
     Button Back_B {

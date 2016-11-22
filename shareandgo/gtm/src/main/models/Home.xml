@@ -67,6 +67,25 @@
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
                                 </ns1:entry>
                                 <ns1:entry>
+                                    <ns1:widget ns1:id="ZoneInfo_L" ns1:width="100%" ns1:height="23px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:table ns1:id="ZoneInfo" ns1:width="100%" ns1:height="100px">
+                                        <ns1:column>
+                                            <ns1:widget ns1:id="locs" ns1:width="100%" ns1:height="23px"/>
+                                        </ns1:column>
+                                        <ns1:column>
+                                            <ns1:widget ns1:id="zone" ns1:width="100%" ns1:height="23px"/>
+                                        </ns1:column>
+                                    </ns1:table>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
                                     <ns1:widget ns1:id="allTrips_L" ns1:width="100%" ns1:height="23px"/>
                                 </ns1:entry>
                                 <ns1:entry>
@@ -77,7 +96,25 @@
                                         <ns1:column>
                                             <ns1:widget ns1:id="driver" ns1:width="100%" ns1:height="23px"/>
                                         </ns1:column>
+                                        <ns1:column>
+                                            <ns1:widget ns1:id="passengers" ns1:width="100%" ns1:height="23px"/>
+                                        </ns1:column>
+                                        <ns1:column>
+                                            <ns1:widget ns1:id="price" ns1:width="100%" ns1:height="23px"/>
+                                        </ns1:column>
+                                        <ns1:column>
+                                            <ns1:widget ns1:id="startDate" ns1:width="100%" ns1:height="23px"/>
+                                        </ns1:column>
+                                        <ns1:column>
+                                            <ns1:widget ns1:id="locs" ns1:width="100%" ns1:height="23px"/>
+                                        </ns1:column>
                                     </ns1:table>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:line-layout orientation="horizontal" ns1:height="10px"/>
+                                </ns1:entry>
+                                <ns1:entry>
+                                    <ns1:widget ns1:id="JoinTrip_B" ns1:width="100%" ns1:height="auto"/>
                                 </ns1:entry>
                                 <ns1:entry>
                                     <ns1:line-layout orientation="horizontal" ns1:height="10px"/>

@@ -127,6 +127,12 @@ role PREMIUM_USER {
 
         update(driver) 
 
+        update(price)
+
+        update(isCreated)
+
+        update(startDate)
+
         delete
 
     }
