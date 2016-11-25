@@ -46,6 +46,43 @@ Window LoginWindow {
         event onClick {
 
             if [Person.allInstances()->isEmpty()] {
+
+                //Create Zone 1
+                zone1 := new Zone
+                [$zone1$.zname] := ['Zurich']
+
+                //Create Zone 2
+                zone2 := new Zone
+                [$zone2$.zname] := ['Basel']
+
+                //Create Zone 3
+                zone3 := new Zone
+                [$zone3$.zname] := ['Winterthur']
+                
+
+
+                l1 := new Location
+                [$l1$.name] := ['Meierhofplatz']
+                [$l1$.zones] += [$zone1$]
+                [$l1$.zones] += [$zone2$]
+
+                l2 := new Location
+                [$l2$.name] := ['Honggerberg']
+                [$l2$.zones] += [$zone1$]
+
+                l3 := new Location
+                [$l3$.name] := ['Central']
+                [$l3$.zones] += [$zone1$]
+                [$l3$.zones] += [$zone2$]
+
+                l4 := new Location
+                [$l4$.name] := ['BaselLoc']
+                [$l4$.zones] += [$zone2$]
+                
+                l5 := new Location
+                [$l5$.name] := ['ZuriWinterstrasse']
+                [$l5$.zones] += [$zone3$]
+                [$l5$.zones] += [$zone1$]
                 
                 //Create User 1
                 person1 := new Person
@@ -54,6 +91,7 @@ Window LoginWindow {
                 [$person1$.username] := ['pivanov']
                 [$person1$.password] := ['123']
                 [$person1$.myRole] := [Role::USER]
+                [$person1$.livingZone] := [$zone2$]
                 
                 //Create User 2
                 person2 := new Person
@@ -62,31 +100,17 @@ Window LoginWindow {
                 [$person2$.username] := ['hnaous']
                 [$person2$.password] := ['123']
                 [$person2$.myRole] := [Role::PREMIUM_USER]
+                [$person2$.livingZone] := [$zone1$]
 
-            }
 
-            if [Location.allInstances()->isEmpty()] {
-
-                        //Create Zone 1
-                    zone1 := new Zone
-                    [$zone1$.zname] := ['Zurich']
-
-                    //Create Zone 2
-                    zone2 := new Zone
-                    [$zone2$.zname] := ['Basel']
-
-                   l1 := new Location
-                   [$l1$.name] := ['Meierhofplatz']
-                   [$l1$.zones] += [$zone1$]
-                   [$l1$.zones] += [$zone2$]
-
-                   l2 := new Location
-                   [$l2$.name] := ['Honggerberg']
-                   [$l2$.zones] += [$zone1$]
-                   
-                   l3 := new Location
-                   [$l3$.name] := ['Central']
-                   [$l3$.zones] += [$zone1$]
+                //Create User 3
+                person3 := new Person
+                [$person3$.firstName] := ['Random']
+                [$person3$.lastName] := ['Person']
+                [$person3$.username] := ['person']
+                [$person3$.password] := ['123']
+                [$person3$.myRole] := [Role::PREMIUM_USER]
+                [$person3$.livingZone] := [$zone3$]
 
             }
 

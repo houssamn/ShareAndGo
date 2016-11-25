@@ -47,8 +47,12 @@ Window CreateTrip {
         String text:= ['Add To Trip']
         event onClick {
                if [not $CreateTrip.LocationsCB.selected$.oclIsUndefined()] {
-                    [$CreateTrip.tripToCreate$.childLocations] += [$CreateTrip.LocationsCB.selected$]
-                    reevaluate CreateTrip.LocationsTillNow.rows
+                    try{
+                        [$CreateTrip.tripToCreate$.childLocations] += [$CreateTrip.LocationsCB.selected$]
+                        reevaluate CreateTrip.LocationsTillNow.rows
+                    }catch(SecurityException){
+                        notification(['Message'], ['You Are Not Allowed To Add This Location'], [500])
+                    }
                }else {
                   notification(['Message'], ['Please Select A Location'], [500])
                }
@@ -86,8 +90,12 @@ Window CreateTrip {
         String text := ['Remove Selected From List']
         event onClick {
                if [not $CreateTrip.LocationsTillNow.selected$->oclIsUndefined()] {
-                [$CreateTrip.tripToCreate$.childLocations] -= [$CreateTrip.LocationsTillNow.selected$]
-                reevaluate CreateTrip.LocationsTillNow.rows
+                try {
+                    [$CreateTrip.tripToCreate$.childLocations] -= [$CreateTrip.LocationsTillNow.selected$]
+                    reevaluate CreateTrip.LocationsTillNow.rows
+                }catch(SecurityException){
+                    notification(['Message'], ['You are not allowed to remove this location'], [500])
+                }
                }else {
                 notification(['Message'], ['No Location Selected'], [500])
                }
@@ -123,6 +131,9 @@ Window CreateTrip {
               [$CreateTrip.tripToCreate$.price] := [$Price_TF.text$.toReal()] 
               [$CreateTrip.tripToCreate$.startDate] := [$Chooser_DF.selected$] 
               [$CreateTrip.tripToCreate$.isCreated] := [true] // This makes it visible to other users now
+              
+              //Necessary or creates duplicates ??   
+              //[$CreateTrip.caller$.asDriver] += [$CreateTrip.tripToCreate$]
               back
             }
         }

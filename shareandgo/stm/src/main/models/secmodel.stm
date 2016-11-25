@@ -100,6 +100,9 @@ role PREMIUM_USER {
             (caller.asPassenger->intersection(target.complaintTarget.asPassenger->
             union(target.complaintTarget.asDriver))->union(caller.asDriver->
             intersection(target.complaintTarget.asPassenger)))->asSet()->isEmpty() ]
+    
+        add(asDriver) constrainedBy [ target.driver = caller ]
+
     }
     
     Zone {
@@ -114,6 +117,7 @@ role PREMIUM_USER {
         //read constrainedBy [ not self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() 
           //                   or not self.childLocations->any(v2|v2.zones->any(zn|not (zn.locations->intersection(caller.livingZone.locations)->asSet()->isEmpty()))->asSet()->isEmpty())->asSet()->isEmpty()     ]
 
+        //TODO: Change Read Constraint
         read
 
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
@@ -121,19 +125,24 @@ role PREMIUM_USER {
 
         create 
 
-        add(childLocations) 
+        add(childLocations) constrainedBy [not(self.isCreated) and (self.driver = caller)  
+                                and not(self.childLocations->includes(target)) 
+                                and (target.zones->includes(caller.livingZone) 
+                                or caller.asPassenger.childLocations->includes(target) ) ]  
 
-        remove(childLocations)
 
-        update(driver) 
 
-        update(price)
+        remove(childLocations) constrainedBy [not(self.isCreated) and self.driver = caller]
 
-        update(isCreated)
+        update(driver) constrainedBy [not(self.isCreated) and value = caller ]
+        
+        update(price) constrainedBy [not(self.isCreated) and self.driver = caller ]
 
-        update(startDate)
+        update(isCreated) 
 
-        delete
+        update(startDate) constrainedBy [not(self.isCreated) and self.driver = caller]
+
+        delete constrainedBy [not(self.isCreated) and self.driver = caller]
 
     }
 

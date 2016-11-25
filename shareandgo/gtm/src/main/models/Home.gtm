@@ -65,7 +65,7 @@ Window Home {
     }
     
     Table allUsers {
-        Set(Person) rows := [Person.allInstances()->any(v1| not (v1.username = $Home.caller$.username ) )->asSet()] //Hide Caller 
+        Set(Person) rows := [Person.allInstances()->excluding($Home.caller$)] //Hide Caller 
         columns {
             ['firstName'] : Label fName {
                 String text
@@ -214,6 +214,7 @@ Window Home {
                 try {
                     [$Home.allTrips.selected$.passengers] += [$Home.caller$]
                     notification(['Message'], ['Successfully Joined Trip'], [500])
+                    reevaluate allTrips.rows
                 }catch(SecurityException){
                     notification(['Message'], ['You Cannot Join This Trip'], [500])
                 }
@@ -231,10 +232,12 @@ Window Home {
         event onClick {
             //Open Create Trip Window
             if[$Home.caller$.myRole = Role::PREMIUM_USER]{
+                
                 t := new Trip
                 [$t$.isCreated] := [false]
                 [$t$.driver] := [$Home.caller$]
                 open CreateTrip(caller:[$Home.caller$], role:[$Home.caller$.myRole], tripToCreate:[$t$])
+                
             }else{
                 notification (['Message'], ['Only A Premium User Can Create Trips'], [1000])
             }
