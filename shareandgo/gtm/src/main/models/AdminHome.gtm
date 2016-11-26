@@ -59,8 +59,12 @@ Window AdminHome {
     Button Create_Loc_B {
         String text := ['Create New Location']
         event onClick {
-            loc := new Location
-            //open CreateLocation(locToCreate:[$loc$])
+            try {
+                loc := new Location
+                open CreateLocation(locToCreate:[$loc$])
+            } catch (SecurityException) {
+                notification(['Error'],['You are not allowed to create a location'],[500]) 
+            }
         }
     }
 

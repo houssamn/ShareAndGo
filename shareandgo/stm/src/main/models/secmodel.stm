@@ -192,6 +192,8 @@ role ADMIN {
 
         //add the zone only if the location is not already in that zone
         add(zones) constrainedBy [ self.zones->excludes(target) ]
+
+        delete
     }
 
     Zone {

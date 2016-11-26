@@ -8,6 +8,7 @@
 @import "LoginWindow.css";
 @import "Report.css";
 @import "RegisterWindow.css";
+@import "CreateLocation.css";
 @import "CreateZone.css";
 
 /* The following rule is to avoid resizeable text fields */

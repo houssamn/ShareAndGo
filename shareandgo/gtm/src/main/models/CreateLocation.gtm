@@ -1,0 +1,114 @@
+Window CreateLocation {
+    Location locToCreate
+
+    Label Loc_Name_L {
+        String text := ['Location name']
+    }   
+
+    TextField Loc_Name_TF {
+        String text := [null]
+    }
+
+    Label CoordX_L {
+        String text := ['Coordinate X']
+    }
+
+    TextField CoordX_TF {
+        String text := [null]
+    }
+
+    Label CoordY_L {
+        String text := ['Coordinate Y']
+    }
+
+    TextField CoordY_TF {
+        String text := [null]
+    }
+
+    Label Zones_L {
+        String text := ['Available Zones']
+    }
+
+    ComboBox ZoneCB {
+        Set(Zone) rows := [Zone.allInstances()]
+        Zone selected := [null]
+
+        Label zoneName {
+            String text := [$CreateLocation.ZoneCB.row$.zname]
+        }
+    }
+
+    Button Add_Zone_B {
+        String text:= ['Add Location to Zone']
+        event onClick {
+            if [not $CreateLocation.ZoneCB.selected$.oclIsUndefined()] {
+                try {
+                    [$CreateLocation.locToCreate$.zones] += [$CreateLocation.ZoneCB.selected$]
+                    reevaluate CreateLocation.ParentZones.rows
+                }catch(SecurityException){
+                    notification(['Message'], ['You Are Not Allowed To Add This Zone'], [500])
+                }
+            }else {
+               notification(['Message'], ['Please Select A Zone'], [500])
+            }
+        }
+
+    }
+
+    Label Zones_Table_L {
+        String text := ['Selected Zones']
+    }
+
+    Table ParentZones {
+        Set(Zone) rows := [$CreateLocation.locToCreate$.zones]
+        Zone selected := [null]
+        columns {
+            ['Zone']  : Label zoneName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$CreateLocation.ParentZones.row$.zname]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Button create_location_B {
+        String text := ['Create']
+        event onClick {
+            if [$CreateLocation.locToCreate$.zones->size() < 1] {
+                notification([''],['Error. At least one zone should be selected'],[500])
+            } else {
+                if [$CreateLocation.Loc_Name_TF.text$.oclIsUndefined()] {
+                    notification([''],['Error. A location should have a name'],[500])
+                } else {
+                    if [$CreateLocation.CoordX_TF.text$.oclIsUndefined()] {
+                        notification([''],['Provide a X coordinate'],[500])
+                    } else {
+                        if [$CreateLocation.CoordY_TF.text$.oclIsUndefined()] {
+                            notification([''],['Provide a Y coordinate'],[500])
+                        } else {
+                            [$CreateLocation.locToCreate$.name] :=  [$CreateLocation.Loc_Name_TF.text$]
+                            [$CreateLocation.locToCreate$.x] :=  [$CreateLocation.CoordX_TF.text$.toReal()]
+                            [$CreateLocation.locToCreate$.y] :=  [$CreateLocation.CoordY_TF.text$.toReal()]
+                            
+                            back
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Button Back_B {
+            String text := ['Back']
+            event onClick {
+                delete [$CreateLocation.locToCreate$]
+                back
+            }
+    }
+} 
