@@ -1,12 +1,36 @@
 Window Report {
     Person caller
+    Complaint complaintToCreate
+
+    Label SelectTrip_L {
+        String text := ['Select A Trip']
+    }
+    
+    ComboBox TripCB {
+        Set(Trip) rows := [Trip.allInstances()]
+        Trip selected := [null]
+
+        Label TripDetails {
+            String text := [$Report.TripCB.row$.startDate.toString() + ", Driver: " +  $Report.TripCB.row$.driver.firstName]
+        }
+    }
+
+
+    Button ConfirmTripSelection {
+        String text := ['Confirm Trip Selection']
+
+        event onClick {
+            reevaluate Report.UsersCB.rows
+        }
+    }
+
 
     Label SelectUser_L {
         String text := ['Select A User ...']
     }
 
     ComboBox UsersCB {
-        Set(Person) rows := [Person.allInstances()]
+        Set(Person) rows := [$Report.TripCB.selected$.passengers->union($Report.TripCB.selected$.driver->asSet())->excluding($Report.caller$)] //All Members of the trip excluding the caller
         Person selected := [null]
 
         Label FullName {
@@ -26,9 +50,33 @@ Window Report {
         String text := ['Submit']
 
         event onClick {
-            //Create Complaint
+            try {
+                //Add Details
+                if [not($Report.UsersCB.selected$.oclIsUndefined()) or not($Report.TripCB.selected$.oclIsUndefined())] {
+                    if[not($Report.Complaint_TF.text$.oclIsUndefined()) and not($Report.Complaint_TF.text$.size() < 10) ] {
+                        //Update Target & Message
+                        [$Report.complaintToCreate$.associatedTrip] := [$Report.TripCB.selected$]
+                        [$Report.complaintToCreate$.complaintTarget] := [$Report.UsersCB.selected$]
+                        [$Report.complaintToCreate$.text] := [$Report.Complaint_TF.text$]
 
-            //Add Details
+                        //Mark Complaint as Created
+                        [$Report.complaintToCreate$.isCreated] := [true]
+
+                        notification(['Message'], ['Successfully Created Your Complaint. Thank you for making Share&Go Much Better :) '], [1000])
+                        //Back One Page
+                        back
+                    }else{
+                        notification(['Message'] , ['Please Tell Us More (10 characters at least)'], [500])
+                    }
+                }else{
+                    notification(['Message'], ['You have to Select A Trip and a User To Complain About'], [500])
+                }
+
+            }catch(SecurityException){
+                notification(['Message'], ['An Error has occurred while filing your complaint. Try again later'], [1000])
+            }
+
+            
         }
 
     }
@@ -36,6 +84,9 @@ Window Report {
     Button back_B {
             String text := ['Back']
             event onClick {
+                //Terminate Complaint Creation
+                delete [$Report.complaintToCreate$]
+
                 back
             }
     }

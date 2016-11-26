@@ -214,8 +214,8 @@ Window Home {
                 try {
                     [$Home.allTrips.selected$.passengers] += [$Home.caller$]
                     notification(['Message'], ['Successfully Joined Trip'], [500])
-                    reevaluate allTrips.rows
-                }catch(SecurityException){
+                    reevaluate Home.allTrips.rows
+               }catch(SecurityException){
                     notification(['Message'], ['You Cannot Join This Trip'], [500])
                 }
             }else{
@@ -248,11 +248,14 @@ Window Home {
     Button Report_B {
         String text := ['Report Misbehaviour']
         event onClick {
-            open Report(caller:[$Home.caller$], role:[$Home.caller$.myRole])
+            try{ 
+                cmpl := new Complaint
+                [$cmpl$.isCreated] := [false]
+                [$cmpl$.complaintOwner] := [$Home.caller$]
+                open Report(caller:[$Home.caller$], role:[$Home.caller$.myRole], complaintToCreate:[$cmpl$])
+            }catch(SecurityException){
+                notification(['Message'], ['You cannot do that .. Sorry bro '], [500])
+            }
         }
     }
-
-    
-
-
 }

@@ -115,7 +115,7 @@ Window CreateTrip {
     }
    
     DateField Chooser_DF {
-        LocalDateTime selected := [null]
+        LocalDateTime value := [null]
     }
 
     //TODO: Create Trip Button [Finalize]
@@ -129,7 +129,7 @@ Window CreateTrip {
                 notification(['Message'], ['You forgot to enter a price buddy ..'] , [500])
             }else{
               [$CreateTrip.tripToCreate$.price] := [$Price_TF.text$.toReal()] 
-              [$CreateTrip.tripToCreate$.startDate] := [$Chooser_DF.selected$] 
+              [$CreateTrip.tripToCreate$.startDate] := [$Chooser_DF.value$] 
               [$CreateTrip.tripToCreate$.isCreated] := [true] // This makes it visible to other users now
               
               //Necessary or creates duplicates ??   
