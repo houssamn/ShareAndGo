@@ -88,8 +88,12 @@ Window AdminHome {
     Button Create_Zone_B {
         String text := ['Create New Zone']
         event onClick {
-            zone := new Zone
-            //open CreateZone(zoneToCreate:[$zone$])
+            try {
+                zone := new Zone
+                open CreateZone(zoneToCreate:[$zone$])
+            } catch (SecurityException) {
+                notification(['Error'],['You are not allowed to create a zone'],[500]) 
+            }
         }
     }
 

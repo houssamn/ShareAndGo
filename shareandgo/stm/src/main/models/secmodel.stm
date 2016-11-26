@@ -204,6 +204,8 @@ role ADMIN {
 
         //add the location only if it is not already in the zone
         add(locations) constrainedBy [ self.locations->excludes(target) ]
+
+        delete
     }
 
     Trip {
