@@ -1,10 +1,12 @@
 @import "../reindeer/legacy-styles.css";
 
+@import "AdminHome.css";
+@import "CreateTrip.css";
+@import "UserData.css";
 @import "Home.css";
 @import "LoginWindow.css";
-@import "CreateTrip.css";
-@import "RegisterWindow.css";
 @import "Report.css";
+@import "RegisterWindow.css";
 
 /* The following rule is to avoid resizeable text fields */
 .v-textarea {

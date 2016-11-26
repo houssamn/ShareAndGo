@@ -173,7 +173,14 @@ role PREMIUM_USER {
 
 role ADMIN {
     Person {
-        read (complaintAbout)
+        create
+
+        read
+
+        update (isBanned) constrainedBy [
+            (self.myRole = Role::USER and self.complaintAbout->size() > 2) or
+            (self.myRole = Role::PREMIUM_USER and self.complaintAbout->size() > 4)
+        ]
     }
 
     Location {

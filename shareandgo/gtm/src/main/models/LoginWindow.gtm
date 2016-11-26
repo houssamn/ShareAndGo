@@ -26,9 +26,12 @@ Window LoginWindow {
                                 and c.password = $Password_TF.text$ )]
 
             if [not($loggedUser$.oclIsUndefined())]{
-                notification (['Message'], ['Login Successful.'], [500])
-                open Home(caller:[$loggedUser$], role:[$loggedUser$.myRole])
-            }else {
+                if [$loggedUser$.myRole = Role::ADMIN] {
+                   open AdminHome(caller:[$loggedUser$], role:[$loggedUser$.myRole])
+                } else {
+                    open Home(caller:[$loggedUser$], role:[$loggedUser$.myRole])
+                }
+            } else {
                 notification (['Message'], ['Login Failed.'], [500])
             }
         }
@@ -112,6 +115,14 @@ Window LoginWindow {
                 [$person3$.myRole] := [Role::PREMIUM_USER]
                 [$person3$.livingZone] := [$zone3$]
 
+                //Create User 4
+                person4 := new Person
+                [$person4$.firstName] := ['admin']
+                [$person4$.lastName] := ['admin']
+                [$person4$.username] := ['admin']
+                [$person4$.password] := ['admin']
+                [$person4$.myRole] := [Role::ADMIN]
+                [$person4$.livingZone] := [$zone3$]
             }
 
 
