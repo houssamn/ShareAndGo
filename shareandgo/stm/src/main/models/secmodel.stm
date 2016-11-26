@@ -188,7 +188,7 @@ role ADMIN {
 
         read 
 
-        update(name), update(x), update(y)
+        update(name), update(x), update(y), update(zones)
 
         //add the zone only if the location is not already in that zone
         add(zones) constrainedBy [ self.zones->excludes(target) ]
@@ -202,7 +202,7 @@ role ADMIN {
 
         read 
         
-        update (zname)
+        update (zname), update(locations)
 
         //add the location only if it is not already in the zone
         add(locations) constrainedBy [ self.locations->excludes(target) ]

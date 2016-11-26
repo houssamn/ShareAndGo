@@ -46,13 +46,25 @@ Window AdminHome {
 
     Button VM_Loc_B {
         String text := ['View/Modify Location']
-        //Location locationToView := [null]
+        Location selectedLoc := [null]
 
         event onClick {
-            //locationToView := [$AdminHome.allLocations.selected$->any(p | true)]
-            //loc := new Location
-            //[$loc$.zones] := [$locationToView$.zones]
-            //open ViewModLocation(location: [$locationToView$], locToModify:[$loc$])
+            if[$AdminHome.caller$.myRole = Role::ADMIN] {
+                if [not ($AdminHome.allLocations.selected$ = null)] {
+                    try {
+                        selectedLoc := [$AdminHome.allLocations.selected$->any(p | true)]
+                        locToMod := new Location
+                        [$locToMod$.zones] := [$selectedLoc$.zones]
+                        open ViewModLocation(location: [$selectedLoc$], locToModify:[$locToMod$])
+                    }catch(SecurityException){
+                        notification(['Message'], ['You Cannot View Information About This Location'], [500])
+                    }
+                } else{
+                    notification(['Message'], ['No Location Selected'], [500])
+                }
+            } else{
+                notification (['Message'], ['Only an Admin Can View Full Location Info'], [1000])
+            }
         }
     }
 
@@ -87,6 +99,30 @@ Window AdminHome {
                 }
             }
         }  
+    }
+
+    Button VM_Zone_B {
+        String text := ['View/Modify Zone']
+        Zone selectedZone := [null]
+
+        event onClick {
+            if[$AdminHome.caller$.myRole = Role::ADMIN] {
+                if [not ($AdminHome.allZones.selected$ = null)] {
+                    try {
+                        selectedZone := [$AdminHome.allZones.selected$->any(p | true)]
+                        zoneToMod := new Zone
+                        [$zoneToMod$.locations] := [$selectedZone$.locations]
+                        open ViewModZone(zone: [$selectedZone$], zoneToModify:[$zoneToMod$])
+                    }catch(SecurityException){
+                        notification(['Message'], ['You Cannot View Information About This Zone'], [500])
+                    }
+                } else{
+                    notification(['Message'], ['No Zone Selected'], [500])
+                }
+            } else{
+                notification (['Message'], ['Only an Admin Can View Full Zone Info'], [1000])
+            }
+        }
     }
 
     Button Create_Zone_B {
