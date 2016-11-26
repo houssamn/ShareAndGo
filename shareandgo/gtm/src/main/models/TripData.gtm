@@ -1,0 +1,118 @@
+Window TripData {
+    Person caller
+    Trip trip
+
+    Label Basic_Data_L {
+        String text := ['Basic Data']
+    }
+    
+    Table tripInfo {
+        Set(Trip) rows := [$TripData.trip$.asSet()]
+        columns {
+            ['Start Date'] : Label startDate {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$TripData.tripInfo.row$.startDate.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Driver'] : Label driver {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$TripData.tripInfo.row$.driver.username]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Price'] : Label price {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$TripData.tripInfo.row$.price.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Label Locations_L {
+        String text := ['Locations Of Trip']
+    }
+
+    Table locations {
+        Set(Location) rows := [$TripData.trip$.childLocations]
+        columns {
+            ['Name'] : Label name {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$TripData.locations.row$.name]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Label Passangers_L {
+        String text := ['Passangers']
+    }
+
+    Table passangers {
+        Set(Person) rows := [$TripData.trip$.passengers]
+        columns {
+            ['First Name'] : Label firstName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$TripData.passangers.row$.firstName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Last Name'] : Label lastName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$TripData.passangers.row$.lastName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Home Zone'] : Label zone {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$TripData.passangers.row$.livingZone.zname]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Button back_B {
+            String text := ['Back']
+            event onClick {
+                back
+            }
+    }
+} 

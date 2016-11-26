@@ -209,7 +209,7 @@ Window AdminHome {
                 if [not ($AdminHome.allTrips.selected$ = null)] {
                     try {
                         tripToView := [$AdminHome.allTrips.selected$->any(p | true)]
-                        //open TripData(caller:[$AdminHome.caller$], role:[$AdminHome.caller$.myRole], trip:[$tripToView$])
+                        open TripData(caller:[$AdminHome.caller$], role:[$AdminHome.caller$.myRole], trip:[$tripToView$])
                     }catch(SecurityException){
                         notification(['Message'], ['You Cannot View Information About This Trip'], [500])
                     }
