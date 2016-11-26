@@ -2,5 +2,6 @@
 /shareandgo/stm/target/
 /shareandgo/gtm/target/
 /shareandgo/vm/target/
-*.css
 *.html
+*.xml
+*.css

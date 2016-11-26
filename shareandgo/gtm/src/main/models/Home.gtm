@@ -179,8 +179,8 @@ Window Home {
                 event onView(text) {
                     try {
                         text := [''] //[$Home.allTrips.row$.childLocations].
-                        foreach child in [$Home.allTrips.row$.childLocations] { 
-                             text := [$text$ + $child$.name + ", "]
+                        foreach childLoc in [$Home.allTrips.row$.childLocations] { 
+                             text := [$text$ + $childLoc$.name + ", "]
                         }
                     }
                     catch(SecurityException) {

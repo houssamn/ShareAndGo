@@ -182,7 +182,14 @@ role PREMIUM_USER {
 
 role ADMIN {
     Person {
-        read (complaintAbout)
+        create
+
+        read
+
+        update (isBanned) constrainedBy [
+            (self.myRole = Role::USER and self.complaintAbout->size() > 2) or
+            (self.myRole = Role::PREMIUM_USER and self.complaintAbout->size() > 4)
+        ]
     }
 
     Location {
@@ -194,6 +201,8 @@ role ADMIN {
 
         //add the zone only if the location is not already in that zone
         add(zones) constrainedBy [ self.zones->excludes(target) ]
+
+        delete
     }
 
     Zone {
@@ -206,6 +215,8 @@ role ADMIN {
 
         //add the location only if it is not already in the zone
         add(locations) constrainedBy [ self.locations->excludes(target) ]
+
+        delete
     }
 
     Trip {

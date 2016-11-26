@@ -1,0 +1,232 @@
+Window AdminHome {
+    Person caller
+    
+    Label Locations_L {
+        String text := ['Locations']
+    } 
+
+    Table allLocations {
+        Set(Location) rows := [Location.allInstances()]
+        columns {
+            ['Name'] : Label name {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminHome.allLocations.row$.name]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Coordinate X'] : Label coordX {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminHome.allLocations.row$.x.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Coordinate Y'] : Label coordY {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminHome.allLocations.row$.y.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }  
+    }
+
+    Button VM_Loc_B {
+        String text := ['View/Modify Location']
+        //Location locationToView := [null]
+
+        event onClick {
+            //locationToView := [$AdminHome.allLocations.selected$->any(p | true)]
+            //loc := new Location
+            //[$loc$.zones] := [$locationToView$.zones]
+            //open ViewModLocation(location: [$locationToView$], locToModify:[$loc$])
+        }
+    }
+
+    Button Create_Loc_B {
+        String text := ['Create New Location']
+        event onClick {
+            try {
+                loc := new Location
+                open CreateLocation(locToCreate:[$loc$])
+            } catch (SecurityException) {
+                notification(['Error'],['You are not allowed to create a location'],[500]) 
+            }
+        }
+    }
+
+    Label Zones_L {
+        String text := ['Zones']
+    } 
+
+    Table allZones {
+        Set(Zone) rows := [Zone.allInstances()]
+        columns {
+            ['Name'] : Label name {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminHome.allZones.row$.zname]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }  
+    }
+
+    Button Create_Zone_B {
+        String text := ['Create New Zone']
+        event onClick {
+            try {
+                zone := new Zone
+                open CreateZone(zoneToCreate:[$zone$])
+            } catch (SecurityException) {
+                notification(['Error'],['You are not allowed to create a zone'],[500]) 
+            }
+        }
+    }
+
+    Label Users_L {
+        String text := ['Users']
+    } 
+
+    Table allUsers {
+        Set(Person) rows := [Person.allInstances()->excluding($AdminHome.caller$)]
+        columns {
+            ['firstName'] : Label fName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminHome.allUsers.row$.firstName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['lastName'] : Label lastName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminHome.allUsers.row$.lastName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+        }  
+    }
+
+    Button Read_User_B {
+        String text := ['Check full user data']
+        Person userToView := [null]
+
+        event onClick {
+            if[$AdminHome.caller$.myRole = Role::ADMIN] {
+                if [not ($AdminHome.allUsers.selected$ = null)] {
+                    try {
+                        userToView := [$AdminHome.allUsers.selected$->any(p | true)]
+                        open UserData(caller:[$AdminHome.caller$], role:[$AdminHome.caller$.myRole], user:[$userToView$])
+                    }catch(SecurityException){
+                        notification(['Message'], ['You Cannot View Information About This User'], [500])
+                    }
+                } else{
+                    notification(['Message'], ['No User Selected'], [500])
+                }
+            } else{
+                notification (['Message'], ['Only an Admin Can View Full User Info'], [1000])
+            }
+        }
+    }
+
+    Button Ban_User_B {
+        String text := ['Ban User']
+        Person userToBan := [null]
+
+        event onClick {
+            userToBan := [$AdminHome.allUsers.selected$->any(p | true)]
+            if [$AdminHome.Ban_User_B.userToBan$.isBanned = null] {
+                    try {
+                        [$AdminHome.Ban_User_B.userToBan$.isBanned] := [true]
+                    } catch (SecurityException) {
+                        notification(['Message'], ['This user cannot be banned'], [500])
+                    }
+            }
+            else {
+                notification(['Error'],['User is already banned'],[500]) 
+            }
+        }
+    }
+
+    Label Trips_L {
+        String text := ['Trips']
+    } 
+
+    Table allTrips {
+        Set(Trip) rows := [Trip.allInstances()]
+        columns {
+            ['Driver'] : Label driver {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminHome.allTrips.row$.driver.username]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Start Date'] : Label startDate {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminHome.allTrips.row$.startDate.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+        }  
+    }
+
+    Button Read_Trip_B {
+        String text := ['View Trip Info']
+        Trip tripToView := [null]
+
+        event onClick {
+            if[$AdminHome.caller$.myRole = Role::ADMIN] {
+                if [not ($AdminHome.allTrips.selected$ = null)] {
+                    try {
+                        tripToView := [$AdminHome.allTrips.selected$->any(p | true)]
+                        open TripData(caller:[$AdminHome.caller$], role:[$AdminHome.caller$.myRole], trip:[$tripToView$])
+                    }catch(SecurityException){
+                        notification(['Message'], ['You Cannot View Information About This Trip'], [500])
+                    }
+                } else{
+                    notification(['Message'], ['No Trip Selected'], [500])
+                }
+            } else{
+                notification (['Message'], ['Only an Admin Can View Full Trip Info'], [1000])
+            }
+        }
+    }
+}
