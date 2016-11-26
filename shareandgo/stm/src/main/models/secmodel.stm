@@ -1,6 +1,5 @@
 role SYSTEM {
     //System Has Full Access on Everything For Now ...
-
     Person {
         fullAccess
     }
@@ -27,7 +26,7 @@ role USER {
     Person {
         read (firstName), read (lastName), read (username)
             
-        read (livingZone), read (myRole) constrainedBy [ caller = self ]
+        read (livingZone), read (myRole) , read(asPassenger), read(asDriver), read(isBanned) constrainedBy [ caller = self ]
 
         update (firstName), update (lastName), update (password),
         update (livingZone) constrainedBy [ caller = self ]
@@ -52,13 +51,17 @@ role USER {
     }
     
     Trip {
-        read constrainedBy [ not self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() ]
+        //read constrainedBy [ not(self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty())]
+        //TODO: Fix Later ... 
+        read
 
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
         and self.childLocations->any(v1| not v1.zones->includes(caller.livingZone))->asSet()->isEmpty()]
     }
 
     Complaint {
+        update (isCreated)
+
         update (complaintOwner) constrainedBy [ value = caller and 
             not self.isCreated
         ]
@@ -74,10 +77,12 @@ role USER {
             not self.isCreated and
             self.complaintOwner = caller
         ]
-
-        update (isCreated)
+ 
+        update (associatedTrip) constrainedBy [not self.isCreated and self.complaintOwner = caller]
 
         create 
+
+        delete constrainedBy [self.complaintOwner = caller and not self.isCreated]
     }
 }
 
@@ -86,7 +91,7 @@ role PREMIUM_USER {
     Person {
         read (firstName), read (lastName), read (username)
             
-        read (livingZone), read(myRole) constrainedBy [ caller = self ]
+        read (livingZone), read(myRole), read(asPassenger), read(asDriver), read(isBanned) constrainedBy [ caller = self ]
 
         update (firstName), update (lastName), update (password),
         update (livingZone) constrainedBy [ caller = self ]
@@ -115,7 +120,7 @@ role PREMIUM_USER {
     
     Trip {
         //read constrainedBy [ not self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() 
-          //                   or not self.childLocations->any(v2|v2.zones->any(zn|not (zn.locations->intersection(caller.livingZone.locations)->asSet()->isEmpty()))->asSet()->isEmpty())->asSet()->isEmpty()     ]
+        //                   or not self.childLocations->any(v2|v2.zones->any(zn|not (zn.locations->intersection(caller.livingZone.locations)->asSet()->isEmpty()))->asSet()->isEmpty())->asSet()->isEmpty()     ]
 
         //TODO: Change Read Constraint
         read
@@ -164,8 +169,12 @@ role PREMIUM_USER {
 
         update (isCreated)
 
+        update (associatedTrip) constrainedBy [not self.isCreated and self.complaintOwner = caller]
+
         create 
 
+
+        delete constrainedBy [self.complaintOwner = caller and not self.isCreated]
         //add himself as driver , update startDate, add(childLocations) under constraint, update price, update created[add to data model]
     }
 }
