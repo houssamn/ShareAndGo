@@ -26,37 +26,62 @@ role USER {
     Person {
         read (firstName), read (lastName), read (username)
             
-        read (livingZone), read (myRole) , read(asPassenger), read(asDriver), read(isBanned) constrainedBy [ caller = self ]
+        read (livingZone), read (myRole) , read(asPassenger), read(asDriver), read(isBanned), read(password) constrainedBy [ caller = self ]
 
         update (firstName), update (lastName), update (password),
         update (livingZone) constrainedBy [ caller = self ]
 
+
+        //Joining A Trip iff:
+        //  -Adding himself
+        //  -Not Already Part of the trip
+        //  -All Locations belong to User's Living Zone
+        //  -No More than 3 passengers already in trip
         add (asPassenger) constrainedBy [ caller = self and
             not self.asPassenger->includes(target) and 
-            not target.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() 
+            not target.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() and
+            target.childLocations->size() < 4
         ]
 
+
+        //Issue a complaint iff:
+        //  -Owner is complaining as himself
+        //  -Shared A Trip with some person  (as passenger or as driver)
         add (complaintFrom) constrainedBy [ target.complaintOwner = caller and not
             (caller.asPassenger->intersection(target.complaintTarget.asPassenger->
             union(target.complaintTarget.asDriver))->union(caller.asDriver->
             intersection(target.complaintTarget.asPassenger)))->asSet()->isEmpty() ]
     }
     
+    //Read All Zone Info
     Zone {
         read
     }
 
+    //Read All Location Info
     Location {
         read
     }
     
-    Trip {
-        //read constrainedBy [ not(self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty())]
-        //TODO: Fix Later ... 
-        read
 
+
+    Trip {
+
+        //Read Trips iff:
+        // -All Locations belong to user's living zone
+        //self = null used as a patch where in some cases the selected trip value is equal to null , 
+        //this patch is used in order not to crash when a user tries to read a null value (as a result of some filter)
+        read constrainedBy [(self = null) or  
+                not(self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty())]
+        
+        //Add himself as passenger:
+        //  -adding himself
+        //  -not already in trip
+        //  -alll locations belong to user's livin zone
+        //  -no more than 3 passengers already
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
-        and self.childLocations->any(v1| not v1.zones->includes(caller.livingZone))->asSet()->isEmpty()]
+        and self.childLocations->any(v1| not v1.zones->includes(caller.livingZone))->asSet()->isEmpty()
+        and self.childLocations->size() < 4 ]
     }
 
     Complaint {
@@ -66,6 +91,8 @@ role USER {
             not self.isCreated
         ]
 
+        //owner of complaint
+        //Shared A Trip with the person
         update (complaintTarget) constrainedBy [
             self.complaintOwner = caller and
             not self.isCreated and 
@@ -82,6 +109,7 @@ role USER {
 
         create 
 
+        //Delete the complaint if it is not finalized (i.e. user aborted create complaint action)
         delete constrainedBy [self.complaintOwner = caller and not self.isCreated]
     }
 }
@@ -98,7 +126,8 @@ role PREMIUM_USER {
 
         add (asPassenger) constrainedBy [ caller = self and
             not self.asPassenger->includes(target) and 
-            not target.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() 
+            not target.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty()
+            and target.childLocations->size() < 4
         ]
 
         add (complaintFrom) constrainedBy [ target.complaintOwner = caller and not
@@ -106,7 +135,7 @@ role PREMIUM_USER {
             union(target.complaintTarget.asDriver))->union(caller.asDriver->
             intersection(target.complaintTarget.asPassenger)))->asSet()->isEmpty() ]
     
-        add(asDriver) constrainedBy [ target.driver = caller ]
+        add(asDriver) constrainedBy [ target.driver = caller and not(target.isCreated) ]
 
     }
     
@@ -119,14 +148,19 @@ role PREMIUM_USER {
     }
     
     Trip {
-        //read constrainedBy [ not self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() 
-        //                   or not self.childLocations->any(v2|v2.zones->any(zn|not (zn.locations->intersection(caller.livingZone.locations)->asSet()->isEmpty()))->asSet()->isEmpty())->asSet()->isEmpty()     ]
+        //Read if one of the locations belongs to the user's living zone    
+        // or if he has visited this location before
+        // Or the person is creating the trip right now
+        //self = null used as a patch for wierd exceptions with verification on null values
+        read constrainedBy [ (self = null) or (not (self.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty())
+                        or not(self.childLocations->any(v1|not(v1.zones.locations->intersection(caller.livingZone.locations)->isEmpty()))->asSet()->isEmpty())
+                       or (self.driver = caller)) ]
+                     //      or not (self.childLocations->any(v2|v2.zones->any(zn|not (zn.locations->intersection(caller.livingZone.locations)->asSet()->isEmpty()))->asSet()->isEmpty())->asSet()->isEmpty() )    ]             
 
-        //TODO: Change Read Constraint
-        read
-
+        
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
-        and not self.childLocations->any(k|k.zones->includes(caller.livingZone))->asSet()->isEmpty() ]
+        and not self.childLocations->any(k|k.zones->includes(caller.livingZone))->asSet()->isEmpty() 
+        and self.childLocations->size() < 4 ]
 
         create 
 
@@ -147,6 +181,8 @@ role PREMIUM_USER {
 
         update(startDate) constrainedBy [not(self.isCreated) and self.driver = caller]
 
+
+        //Allow the User to delete the trip if it is still not published (i.e. aborted create Trip mode)
         delete constrainedBy [not(self.isCreated) and self.driver = caller]
 
     }
@@ -155,7 +191,8 @@ role PREMIUM_USER {
         update (complaintOwner) constrainedBy [ value = caller and 
             not self.isCreated
         ]
-
+        
+        //Share a ride constraint
         update (complaintTarget) constrainedBy [
             self.complaintOwner = caller and
             not self.isCreated and 
@@ -175,7 +212,7 @@ role PREMIUM_USER {
 
 
         delete constrainedBy [self.complaintOwner = caller and not self.isCreated]
-        //add himself as driver , update startDate, add(childLocations) under constraint, update price, update created[add to data model]
+       
     }
 }
 
@@ -222,4 +259,8 @@ role ADMIN {
     Trip {
         read
     }
-}
+
+    Complaint {
+       read
+    }
+}   

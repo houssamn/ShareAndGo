@@ -113,7 +113,7 @@ Window LoginWindow {
                 [$person3$.username] := ['person']
                 [$person3$.password] := ['123']
                 [$person3$.myRole] := [Role::PREMIUM_USER]
-                [$person3$.livingZone] := [$zone3$]
+                [$person3$.livingZone] := [$zone2$]
 
                 //Create User 4
                 person4 := new Person

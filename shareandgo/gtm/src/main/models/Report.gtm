@@ -7,7 +7,7 @@ Window Report {
     }
     
     ComboBox TripCB {
-        Set(Trip) rows := [Trip.allInstances()]
+        Set(Trip) rows := [$Report.caller$.asDriver->union($Report.caller$.asPassenger)] //Complain Only About Trips He has taken part in
         Trip selected := [null]
 
         Label TripDetails {
@@ -52,7 +52,7 @@ Window Report {
         event onClick {
             try {
                 //Add Details
-                if [not($Report.UsersCB.selected$.oclIsUndefined()) or not($Report.TripCB.selected$.oclIsUndefined())] {
+                if [not($Report.UsersCB.selected$.oclIsUndefined()) and not($Report.TripCB.selected$.oclIsUndefined())] {
                     if[not($Report.Complaint_TF.text$.oclIsUndefined()) and not($Report.Complaint_TF.text$.size() < 10) ] {
                         //Update Target & Message
                         [$Report.complaintToCreate$.associatedTrip] := [$Report.TripCB.selected$]
