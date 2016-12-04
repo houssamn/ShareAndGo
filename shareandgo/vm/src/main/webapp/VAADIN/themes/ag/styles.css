@@ -1,17 +1,20 @@
 @import "../reindeer/legacy-styles.css";
 
+@import "AdminCreateLocation.css";
+@import "AdminViewModZone.css";
 @import "Home.css";
-@import "LoginWindow.css";
-@import "CreateLocation.css";
+@import "ViewZones.css";
 @import "CreateTrip.css";
-@import "UserData.css";
-@import "ViewModLocation.css";
-@import "TripData.css";
-@import "CreateZone.css";
+@import "ViewTrips.css";
 @import "RegisterWindow.css";
-@import "Report.css";
-@import "ViewModZone.css";
 @import "AdminHome.css";
+@import "UserInfo.css";
+@import "LoginWindow.css";
+@import "AdminTripData.css";
+@import "AdminUserData.css";
+@import "AdminViewModLocation.css";
+@import "Report.css";
+@import "AdminCreateZone.css";
 
 /* The following rule is to avoid resizeable text fields */
 .v-textarea {

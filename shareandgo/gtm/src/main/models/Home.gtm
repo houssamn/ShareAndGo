@@ -2,230 +2,47 @@ Window Home {
     Person caller
     String text := ['Home']
 
+    Label Homepage_L {
+        String text := ['Welcome To Your Homepage']
+    }   
 
-    Label userInfo_L {
-        String text:= ['User Info']
-    }
-    
-    Table userInfo {
-        Set(Person) rows := [$Home.caller$->asSet()]
-
-        columns {
-            ['firstName'] : Label fName {
-                String text
-                event onView (text) {
-                    try {
-                        text := [$Home.caller$.firstName]
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-            ['lastName'] : Label lastName {
-                String text
-                event onView (text) {
-                    try {
-                        text := [$Home.caller$.lastName]
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-            ['Username'] : Label username {
-                String text
-                event onView (text) {
-                    try {
-                        text := [$Home.caller$.username]
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-            
-            ['Zone'] : Label zone {
-                String text
-                event onView (text) {
-                    try {
-                        text := [$Home.caller$.livingZone.zname]
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
+    Label Banned_L {
+        String text
+        event onView(text) {
+            if [$Home.caller$.myRole  = Role::BANNED_USER] {
+                text := ['!! YOU ARE BANNED !! Get Out !!']
             }
         }
     }
 
-
-    Label allUsers_L {
-        String text:= ['All Users']
-    }
-    
-    Table allUsers {
-        Set(Person) rows := [Person.allInstances()->excluding($Home.caller$)] //Hide Caller 
-        columns {
-            ['firstName'] : Label fName {
-                String text
-                event onView (text) {
-                    try {
-                        text := [$Home.allUsers.row$.firstName]
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-            ['lastName'] : Label lastName {
-                String text
-                event onView (text) {
-                    try {
-                        text := [$Home.allUsers.row$.lastName]
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-
-        }
-        
-    }
-
-    Label ZoneInfo_L {
-        String text := ['Zone Info']
-    }
-
-    Table ZoneInfo{
-        Set(Zone) rows := [Zone.allInstances()->asSet()]
-        columns {
-            ['Zone'] : Label zone {
-                String text
-                event onView(text) {
-                    try {
-                        text := [$ZoneInfo.row$.zname]
-                    }catch(SecurityException){
-                        text := ['****']
-                    }
-                }
-            }
-
-            ['Locations'] : Label locs {
-                String text
-                event onView(text) {
-                    try {
-                        text := [''] 
-                        foreach child in [$Home.ZoneInfo.row$.locations] { 
-                             text := [$text$ + $child$.name + ", "]
-                        }
-                    }catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-        }
-    }
-
-
-    Label allTrips_L {
-        String text := ['All Trips']
-    }
-
-    Table allTrips {
-        Set(Trip) rows := [Trip.allInstances()->asSet()]
-        Trip selected := [null]
-        columns {
-            ['Start Date'] : Label startDate {
-                String text
-                event onView(text) {
-                    try {
-                        text := [$Home.allTrips.row$.startDate.toString()]
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-
-            ['Driver']  : Label driver {
-                String text
-                event onView (text) {
-                    try {
-                        text := [$Home.allTrips.row$.driver.firstName  + " " + $Home.allTrips.row$.driver.lastName]
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-
-            ['Price'] : Label price {
-                String text
-                event onView(text) {
-                    try {
-                        text := [$Home.allTrips.row$.price.toString()]
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-
-            //Show Locations
-            ['Locations'] : Label locs {
-                String text
-                event onView(text) {
-                    try {
-                        text := [''] //[$Home.allTrips.row$.childLocations].
-                        foreach childLoc in [$Home.allTrips.row$.childLocations] { 
-                             text := [$text$ + $childLoc$.name + ", "]
-                        }
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-            //Show Passengers
-            ['Passengers'] : Label passengers {
-                String text
-                event onView(text) {
-                    try {
-                        text := [''] 
-                        foreach passenger in [$Home.allTrips.row$.passengers] { 
-                             text := [$text$ + $passenger$.firstName + ", "]
-                        }
-                    }
-                    catch(SecurityException) {
-                        text := ['****']
-                    }
-                }
-            }
-        }
-    }
-
-    
-    Button JoinTrip_B {
-        String text := ['Join Selected Trip']
+    //Acces To User's Personal Info In Addition to Other Users' Names 
+    Button ViewUsers_B {
+        String text := ['View User Info']
         event onClick {
-            if [not ($Home.allTrips.selected$ = null)] {
-                try {
-                    [$Home.allTrips.selected$.passengers] += [$Home.caller$]
-                    notification(['Message'], ['Successfully Joined Trip'], [500])
-                    reevaluate Home.allTrips.rows
-               }catch(SecurityException){
-                    notification(['Message'], ['You Cannot Join This Trip'], [500])
-                }
-            }else{
-                notification(['Message'], ['You have to SELECT one to JOIN one .. :/'], [500])
-            }
-
+            open UserInfo(caller:[$Home.caller$], role:[$Home.caller$.myRole])
         }
     }
 
 
+    //Access to Zone-Location Information
+    Button ViewZones_B {
+        String text := ['View Zone Information']
+        event onClick  {
+            open ViewZones(caller:[$Home.caller$] , role: [$Home.caller$.myRole])
+        }
+    }
+
+
+    //View Trips Button
+    Button ViewTrips_B {
+        String text := ['View Trips']
+        event onClick {
+            //Opens Trips Viewer in a separate Page
+            open ViewTrips(caller:[$Home.caller$], role:[$Home.caller$.myRole])
+        }
+    }
+
+    //Create Trips Button
     Button CreateTrip_B {
         String text := ['Create Trip']
         

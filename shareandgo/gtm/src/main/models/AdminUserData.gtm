@@ -1,0 +1,194 @@
+Window AdminUserData {
+    Person caller
+    Person user
+
+    Label Basic_Data_L {
+        String text := ['Basic Data']
+    }
+    
+    Table userInfo {
+        Set(Person) rows := [$AdminUserData.user$.asSet()]
+        columns {
+            ['First name'] : Label firstName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.userInfo.row$.firstName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Last name'] : Label lastName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.userInfo.row$.lastName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Username'] : Label username {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.userInfo.row$.username]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Password'] : Label password {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.userInfo.row$.password]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Role'] : Label role {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.userInfo.row$.myRole.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Living Zone'] : Label livingZone {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.userInfo.row$.livingZone.zname]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Label Driver_Trips_L {
+        String text := ['Trips as Driver']
+    }
+
+    Table driverTrips {
+        Set(Trip) rows := [$AdminUserData.user$.asDriver]
+        columns {
+            ['Start Date'] : Label startDate {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.driverTrips.row$.startDate.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Price'] : Label price {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.driverTrips.row$.price.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Label Passanger_Trips_L {
+        String text := ['Trips as Passanger']
+    }
+
+    Table passangerTrips {
+        Set(Trip) rows := [$AdminUserData.user$.asPassenger]
+        columns {
+            ['Start Date'] : Label startDate {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.passangerTrips.row$.startDate.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Price'] : Label price {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.passangerTrips.row$.price.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Driver'] : Label driver {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.passangerTrips.row$.driver.username]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Label Complaints_About_L {
+        String text := ['Complaints against User']
+    }
+
+    Table userComplaints {
+        Set(Complaint) rows := [$AdminUserData.user$.complaintAbout]
+        columns {
+            ['Complaint Owner'] : Label complaintOwner {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.userComplaints.row$.complaintOwner.username]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Message'] : Label message {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminUserData.userComplaints.row$.text]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Button back_B {
+            String text := ['Back']
+            event onClick {
+                back
+            }
+    }
+} 

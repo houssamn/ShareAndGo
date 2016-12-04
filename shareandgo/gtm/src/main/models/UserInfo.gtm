@@ -1,0 +1,115 @@
+Window UserInfo {
+
+Person caller
+
+Label userInfo_L {
+        String text:= ['User Info']
+    }
+    
+    Table userInfo {
+        Set(Person) rows := [$UserInfo.caller$->asSet()]
+
+        columns {
+            ['firstName'] : Label fName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$UserInfo.caller$.firstName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['lastName'] : Label lastName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$UserInfo.caller$.lastName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Username'] : Label username {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$UserInfo.caller$.username]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            
+            ['Zone'] : Label zone {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$UserInfo.caller$.livingZone.zname]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+            ['Status'] : Label Status {
+                String text
+                event onView(text) {
+                    try {
+                        text := [$UserInfo.caller$.myRole.toString()]
+                    }catch(SecurityException){
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+
+    Label allUsers_L {
+        String text:= ['All Users']
+    }
+    
+    Table allUsers {
+        Set(Person) rows := [Person.allInstances()->excluding($UserInfo.caller$)] //Hide Caller 
+        columns {
+            ['firstName'] : Label fName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$UserInfo.allUsers.row$.firstName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['lastName'] : Label lastName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$UserInfo.allUsers.row$.lastName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+        }
+        
+    }
+
+
+   Button Back_B {
+        String text := ['Back']
+        event onClick {
+            back
+        }
+   }
+
+}

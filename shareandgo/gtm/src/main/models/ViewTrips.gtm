@@ -1,0 +1,108 @@
+Window ViewTrips {
+
+Person caller
+Label allTrips_L {
+        String text := ['All Trips']
+    }
+
+    Table allTrips {
+        Set(Trip) rows := [Trip.allInstances()->asSet()]
+        Trip selected := [null]
+        columns {
+            ['Start Date'] : Label startDate {
+                String text
+                event onView(text) {
+                    try {
+                        text := [$ViewTrips.allTrips.row$.startDate.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+            ['Driver']  : Label driver {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$ViewTrips.allTrips.row$.driver.firstName  + " " + $ViewTrips.allTrips.row$.driver.lastName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+            ['Price'] : Label price {
+                String text
+                event onView(text) {
+                    try {
+                        text := [$ViewTrips.allTrips.row$.price.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
+            //Show Locations
+            ['Locations'] : Label locs {
+                String text
+                event onView(text) {
+                    try {
+                        text := [''] //[$Home.allTrips.row$.childLocations].
+                        foreach childLoc in [$ViewTrips.allTrips.row$.childLocations] { 
+                             text := [$text$ + $childLoc$.name + ", "]
+                        }
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            //Show Passengers
+            ['Passengers'] : Label passengers {
+                String text
+                event onView(text) {
+                    try {
+                        text := [''] 
+                        foreach passenger in [$ViewTrips.allTrips.row$.passengers] { 
+                             text := [$text$ + $passenger$.firstName + ", "]
+                        }
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    
+    Button JoinTrip_B {
+        String text := ['Join Selected Trip']
+        event onClick {
+            if [not ($ViewTrips.allTrips.selected$ = null)] {
+                try {
+                    [$ViewTrips.allTrips.selected$.passengers] += [$ViewTrips.caller$]
+                    notification(['Message'], ['Successfully Joined Trip'], [500])
+                    reevaluate ViewTrips.allTrips.rows
+               }catch(SecurityException){
+                    notification(['Message'], ['You Cannot Join This Trip'], [500])
+                }
+            }else{
+                notification(['Message'], ['You have to SELECT one to JOIN one .. :/'], [500])
+            }
+
+        }
+    }
+
+    
+   Button Back_B {
+        String text := ['Back']
+        event onClick {
+            back
+        }
+   }
+    
+}

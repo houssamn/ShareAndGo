@@ -95,6 +95,7 @@ Window LoginWindow {
                 [$person1$.password] := ['123']
                 [$person1$.myRole] := [Role::USER]
                 [$person1$.livingZone] := [$zone2$]
+
                 
                 //Create User 2
                 person2 := new Person
@@ -105,27 +106,27 @@ Window LoginWindow {
                 [$person2$.myRole] := [Role::PREMIUM_USER]
                 [$person2$.livingZone] := [$zone1$]
 
-
                 //Create User 3
                 person3 := new Person
                 [$person3$.firstName] := ['Random']
                 [$person3$.lastName] := ['Person']
                 [$person3$.username] := ['person']
                 [$person3$.password] := ['123']
-                [$person3$.myRole] := [Role::PREMIUM_USER]
+                [$person3$.myRole] := [Role::BANNED_USER]
                 [$person3$.livingZone] := [$zone2$]
+
 
                 //Create User 4
                 person4 := new Person
                 [$person4$.firstName] := ['admin']
                 [$person4$.lastName] := ['admin']
                 [$person4$.username] := ['admin']
-                [$person4$.password] := ['admin']
+                [$person4$.password] := ['secret']
                 [$person4$.myRole] := [Role::ADMIN]
                 [$person4$.livingZone] := [$zone3$]
+            }else {
+                notification(['Message'], ['Already Initialized. Clear the old DB First'] ,[500])
             }
-
-
         }
     }
 }

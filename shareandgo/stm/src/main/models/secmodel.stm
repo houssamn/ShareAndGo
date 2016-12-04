@@ -26,7 +26,7 @@ role USER {
     Person {
         read (firstName), read (lastName), read (username)
             
-        read (livingZone), read (myRole) , read(asPassenger), read(asDriver), read(isBanned), read(password) constrainedBy [ caller = self ]
+        read (livingZone), read (myRole) , read(asPassenger), read(asDriver), read(password) constrainedBy [ caller = self ]
 
         update (firstName), update (lastName), update (password),
         update (livingZone) constrainedBy [ caller = self ]
@@ -119,12 +119,13 @@ role PREMIUM_USER {
     Person {
         read (firstName), read (lastName), read (username)
             
-        read (livingZone), read(myRole), read(asPassenger), read(asDriver), read(isBanned) constrainedBy [ caller = self ]
+        read (livingZone), read(myRole), read(asPassenger), read(asDriver) constrainedBy [ caller = self ]
 
         update (firstName), update (lastName), update (password),
         update (livingZone) constrainedBy [ caller = self ]
 
         add (asPassenger) constrainedBy [ caller = self and
+            not (target.driver = caller) and
             not self.asPassenger->includes(target) and 
             not target.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty()
             and target.childLocations->size() < 4
@@ -159,6 +160,7 @@ role PREMIUM_USER {
 
         
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
+        and not ( self.driver = caller)
         and not self.childLocations->any(k|k.zones->includes(caller.livingZone))->asSet()->isEmpty() 
         and self.childLocations->size() < 4 ]
 
@@ -217,16 +219,29 @@ role PREMIUM_USER {
 }
 
 
+//A Banned User's Will Not Be Able To Do Anything
+role BANNED_USER {
+   Person {
+        read(myRole) constrainedBy [caller  = self]
+    }
+}
+
 role ADMIN {
     Person {
         create
 
         read
 
-        update (isBanned) constrainedBy [
-            (self.myRole = Role::USER and self.complaintAbout->size() > 2) or
-            (self.myRole = Role::PREMIUM_USER and self.complaintAbout->size() > 4)
-        ]
+
+        //First 3 lines : Banning a user
+        //4th-5th lines : Prmoting A UserCondition
+        //6th line, make sure user has normal priveleges and not already banned
+        update(myRole) constrainedBy [ ( value = Role::BANNED_USER and                  
+            ( (self.myRole = Role::USER and self.complaintAbout->size() > 2) or
+              (self.myRole = Role::PREMIUM_USER and self.complaintAbout->size() > 4) ))       
+            or ((value = Role::PREMIUM_USER)  and                               
+             ( self.asDriver->union(self.asPassenger)->size() - self.complaintAbout.associatedTrip->size()  >= 4  ) 
+             and (self.myRole = Role::USER)  )]
     }
 
     Location {

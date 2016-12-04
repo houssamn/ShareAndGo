@@ -1,0 +1,156 @@
+Window AdminViewModZone {
+    Zone zone
+    Zone zoneToModify
+
+    Label Zone_Name_L {
+        String text := ['Zone name']
+    }   
+
+    TextField Zone_Name_TF {
+        String text := [$AdminViewModZone.zone$.zname]
+    }
+
+    Label Inhabitants_L {
+        String text := ['Inhabitants']
+    }
+
+    Table CurrentInhabitants {
+        Set(Person) rows := [$AdminViewModZone.zone$.inhabitants]
+        Person selected := [null]
+        columns {
+            ['FirstName']  : Label firstName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminViewModZone.CurrentInhabitants.row$.firstName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Surname']  : Label surname {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminViewModZone.CurrentInhabitants.row$.lastName]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Username']  : Label username {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminViewModZone.CurrentInhabitants.row$.username]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Label Locations_L {
+        String text := ['Available Locations']
+    }
+
+    ComboBox LocationCB {
+        Set(Location) rows := [Location.allInstances()]
+        Location selected := [null]
+
+        Label locationName {
+            String text := [$AdminViewModZone.LocationCB.row$.name]
+        }
+    }
+
+    Button Add_Location_B {
+        String text:= ['Add Location to Zone']
+        event onClick {
+            if [not $AdminViewModZone.LocationCB.selected$.oclIsUndefined()] {
+                try {
+                    [$AdminViewModZone.zoneToModify$.locations] += [$AdminViewModZone.LocationCB.selected$]
+                    reevaluate AdminViewModZone.CurrentLocations.rows
+                }catch(SecurityException){
+                    notification(['Message'], ['You Are Not Allowed To Add This Location'], [500])
+                }
+            }else {
+               notification(['Message'], ['Please Select A Location'], [500])
+            }
+        }
+
+    }
+
+    Label Locations_Table_L {
+        String text := ['Selected Locations']
+    }
+
+    Table CurrentLocations {
+        Set(Location) rows := [$AdminViewModZone.zoneToModify$.locations]
+        Location selected := [null]
+        columns {
+            ['Name']  : Label locName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminViewModZone.CurrentLocations.row$.name]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Coordinate X']  : Label xCoord {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminViewModZone.CurrentLocations.row$.x.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+            ['Coordinate Y']  : Label yCoord {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminViewModZone.CurrentLocations.row$.y.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Button modify_zone_B {
+        String text := ['Submit changes']
+        event onClick {
+            if [$AdminViewModZone.zoneToModify$.locations->size() < 1] {
+                notification([''],['Error. At least one location should be selected'],[500])
+            } else {
+                if [not $AdminViewModZone.Zone_Name_TF.text$.oclIsUndefined()] {
+                    [$AdminViewModZone.zone$.zname] :=  [$AdminViewModZone.Zone_Name_TF.text$]
+                }
+
+                [$AdminViewModZone.zone$.locations] :=  [$AdminViewModZone.zoneToModify$.locations]
+
+                delete [$AdminViewModZone.zoneToModify$]
+                back
+            }
+        }
+    }
+
+    Button Back_B {
+            String text := ['Back']
+            event onClick {
+                delete [$AdminViewModZone.zoneToModify$]
+                back
+            }
+    }
+} 

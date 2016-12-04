@@ -1,0 +1,112 @@
+Window AdminViewModLocation {
+    Location location
+    Location locToModify
+
+    Label Loc_Name_L {
+        String text := ['Location name']
+    }   
+
+    TextField Loc_Name_TF {
+        String text := [$AdminViewModLocation.location$.name]
+    }
+
+    Label CoordX_L {
+        String text := ['Coordinate X']
+    }
+
+    TextField CoordX_TF {
+        String text := [$AdminViewModLocation.location$.x.toString()]
+    }
+
+    Label CoordY_L {
+        String text := ['Coordinate Y']
+    }
+
+    TextField CoordY_TF {
+        String text := [$AdminViewModLocation.location$.y.toString()]
+    }
+
+    Label Zones_L {
+        String text := ['Available Zones']
+    }
+
+    ComboBox ZoneCB {
+        Set(Zone) rows := [Zone.allInstances()]
+        Zone selected := [null]
+
+        Label zoneName {
+            String text := [$AdminViewModLocation.ZoneCB.row$.zname]
+        }
+    }
+
+    Button Add_Zone_B {
+        String text:= ['Add Location to Zone']
+        event onClick {
+            if [not $AdminViewModLocation.ZoneCB.selected$.oclIsUndefined()] {
+                try {
+                    [$AdminViewModLocation.locToModify$.zones] += [$AdminViewModLocation.ZoneCB.selected$]
+                    reevaluate AdminViewModLocation.ParentZones.rows
+                }catch(SecurityException){
+                    notification(['Message'], ['You Are Not Allowed To Add This Zone'], [500])
+                }
+            }else {
+               notification(['Message'], ['Please Select A Zone'], [500])
+            }
+        }
+
+    }
+
+    Label Zones_Table_L {
+        String text := ['Selected Zones']
+    }
+
+    Table ParentZones {
+        Set(Zone) rows := [$AdminViewModLocation.locToModify$.zones]
+        Zone selected := [null]
+        columns {
+            ['Zone']  : Label zoneName {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminViewModLocation.ParentZones.row$.zname]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    Button modify_location_B {
+        String text := ['Submit changes']
+        event onClick {
+            if [$AdminViewModLocation.locToModify$.zones->size() < 1] {
+                notification([''],['Error. At least one zone should be selected'],[500])
+            } else {
+                if [not $AdminViewModLocation.Loc_Name_TF.text$.oclIsUndefined()] {
+                    [$AdminViewModLocation.location$.name] :=  [$AdminViewModLocation.Loc_Name_TF.text$]
+                }
+                if [not $AdminViewModLocation.CoordX_TF.text$.oclIsUndefined()] {
+                    [$AdminViewModLocation.location$.x] :=  [$AdminViewModLocation.CoordX_TF.text$.toReal()]
+                }
+                if [not $AdminViewModLocation.CoordY_TF.text$.oclIsUndefined()] {
+                    [$AdminViewModLocation.location$.y] :=  [$AdminViewModLocation.CoordY_TF.text$.toReal()]
+                }
+
+                [$AdminViewModLocation.location$.zones] :=  [$AdminViewModLocation.locToModify$.zones]
+
+                delete [$AdminViewModLocation.locToModify$]
+                back
+            }
+        }
+    }
+
+    Button Back_B {
+            String text := ['Back']
+            event onClick {
+                delete [$AdminViewModLocation.locToModify$]
+                back
+            }
+    }
+} 

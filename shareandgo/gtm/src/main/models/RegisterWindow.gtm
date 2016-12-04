@@ -74,7 +74,7 @@
                                          [$person$.username] := [$RegisterWindow.Username_TF.text$]
                                          [$person$.password] := [$RegisterWindow.Password_TF.text$]
                                          [$person$.livingZone] := [$RegisterWindow.zoneCB.selected$]
-
+                                         [$person$.myRole] := [Role::USER] //Initialized to Normal User
 
                                         notification([''], ['Profile Created Successfully'], [500])
                                         back

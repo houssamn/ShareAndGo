@@ -7,6 +7,7 @@ Window AdminHome {
 
     Table allLocations {
         Set(Location) rows := [Location.allInstances()]
+        Location selected := [null]
         columns {
             ['Name'] : Label name {
                 String text
@@ -46,16 +47,13 @@ Window AdminHome {
 
     Button VM_Loc_B {
         String text := ['View/Modify Location']
-        Location selectedLoc := [null]
-
         event onClick {
             if[$AdminHome.caller$.myRole = Role::ADMIN] {
-                if [not ($AdminHome.allLocations.selected$ = null)] {
+                if [not ($AdminHome.allLocations.selected$ = null) ] {
                     try {
-                        selectedLoc := [$AdminHome.allLocations.selected$->any(p | true)]
                         locToMod := new Location
-                        [$locToMod$.zones] := [$selectedLoc$.zones]
-                        open ViewModLocation(location: [$selectedLoc$], locToModify:[$locToMod$])
+                        [$locToMod$.zones] := [$AdminHome.allLocations.selected$.zones]
+                        open AdminViewModLocation(location: [$AdminHome.allLocations.selected$], locToModify:[$locToMod$])
                     }catch(SecurityException){
                         notification(['Message'], ['You Cannot View Information About This Location'], [500])
                     }
@@ -73,7 +71,7 @@ Window AdminHome {
         event onClick {
             try {
                 loc := new Location
-                open CreateLocation(locToCreate:[$loc$])
+                open AdminCreateLocation(locToCreate:[$loc$])
             } catch (SecurityException) {
                 notification(['Error'],['You are not allowed to create a location'],[500]) 
             }
@@ -86,6 +84,7 @@ Window AdminHome {
 
     Table allZones {
         Set(Zone) rows := [Zone.allInstances()]
+        Zone selected := [null]
         columns {
             ['Name'] : Label name {
                 String text
@@ -103,16 +102,13 @@ Window AdminHome {
 
     Button VM_Zone_B {
         String text := ['View/Modify Zone']
-        Zone selectedZone := [null]
-
         event onClick {
             if[$AdminHome.caller$.myRole = Role::ADMIN] {
-                if [not ($AdminHome.allZones.selected$ = null)] {
+                if [not ($AdminHome.allZones.selected$=  null )] {
                     try {
-                        selectedZone := [$AdminHome.allZones.selected$->any(p | true)]
                         zoneToMod := new Zone
-                        [$zoneToMod$.locations] := [$selectedZone$.locations]
-                        open ViewModZone(zone: [$selectedZone$], zoneToModify:[$zoneToMod$])
+                        [$zoneToMod$.locations] := [$AdminHome.allZones.selected$.locations]
+                        open AdminViewModZone(zone: [$AdminHome.allZones.selected$], zoneToModify:[$zoneToMod$])
                     }catch(SecurityException){
                         notification(['Message'], ['You Cannot View Information About This Zone'], [500])
                     }
@@ -130,7 +126,7 @@ Window AdminHome {
         event onClick {
             try {
                 zone := new Zone
-                open CreateZone(zoneToCreate:[$zone$])
+                open AdminCreateZone(zoneToCreate:[$zone$])
             } catch (SecurityException) {
                 notification(['Error'],['You are not allowed to create a zone'],[500]) 
             }
@@ -143,6 +139,7 @@ Window AdminHome {
 
     Table allUsers {
         Set(Person) rows := [Person.allInstances()->excluding($AdminHome.caller$)]
+        Person selected := [null]
         columns {
             ['firstName'] : Label fName {
                 String text
@@ -167,19 +164,29 @@ Window AdminHome {
                 }
             }
 
+            ['User Status'] : Label Status {
+                String text
+                event onView (text) {
+                    try {
+                        text := [$AdminHome.allUsers.row$.myRole.toString()]
+                    }
+                    catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+
         }  
     }
 
     Button Read_User_B {
         String text := ['Check full user data']
-        Person userToView := [null]
-
+        
         event onClick {
             if[$AdminHome.caller$.myRole = Role::ADMIN] {
-                if [not ($AdminHome.allUsers.selected$ = null)] {
+                if [not ($AdminHome.allUsers.selected$ = null ) ] {
                     try {
-                        userToView := [$AdminHome.allUsers.selected$->any(p | true)]
-                        open UserData(caller:[$AdminHome.caller$], role:[$AdminHome.caller$.myRole], user:[$userToView$])
+                        open AdminUserData(caller:[$AdminHome.caller$], role:[$AdminHome.caller$.myRole], user:[$AdminHome.allUsers.selected$])
                     }catch(SecurityException){
                         notification(['Message'], ['You Cannot View Information About This User'], [500])
                     }
@@ -192,15 +199,13 @@ Window AdminHome {
         }
     }
 
+    //Ban User Button
     Button Ban_User_B {
         String text := ['Ban User']
-        Person userToBan := [null]
-
         event onClick {
-            userToBan := [$AdminHome.allUsers.selected$->any(p | true)]
-            if [$AdminHome.Ban_User_B.userToBan$.isBanned = null] {
+            if [not ($AdminHome.allUsers.selected$ = null ) and not( $AdminHome.allUsers.selected$.myRole = Role::BANNED_USER ) ] {
                     try {
-                        [$AdminHome.Ban_User_B.userToBan$.isBanned] := [true]
+                        [$AdminHome.allUsers.selected$.myRole] := [Role::BANNED_USER]
                     } catch (SecurityException) {
                         notification(['Message'], ['This user cannot be banned'], [500])
                     }
@@ -210,6 +215,25 @@ Window AdminHome {
             }
         }
     }
+    
+    //Promote User Button
+    Button Promote_User_B {
+        String text := ['Promote User']
+        event onClick {
+            if [not ($AdminHome.allUsers.selected$ = null ) and not ($AdminHome.allUsers.selected$.myRole = Role::PREMIUM_USER ) ] {
+                    try {
+                        [$AdminHome.allUsers.selected$.myRole] := [Role::PREMIUM_USER]
+                    } catch (SecurityException) {
+                        notification(['Message'], ['This user cannot be promoted'], [500])
+                    }
+            }
+            else {
+                notification(['Error'],['User is already Premium'],[500]) 
+            }
+        }
+    }
+
+
 
     Label Trips_L {
         String text := ['Trips']
@@ -217,6 +241,7 @@ Window AdminHome {
 
     Table allTrips {
         Set(Trip) rows := [Trip.allInstances()]
+        Trip selected := [null]
         columns {
             ['Driver'] : Label driver {
                 String text
@@ -246,14 +271,11 @@ Window AdminHome {
 
     Button Read_Trip_B {
         String text := ['View Trip Info']
-        Trip tripToView := [null]
-
         event onClick {
             if[$AdminHome.caller$.myRole = Role::ADMIN] {
-                if [not ($AdminHome.allTrips.selected$ = null)] {
+                if [not ($AdminHome.allTrips.selected$ = null )] {
                     try {
-                        tripToView := [$AdminHome.allTrips.selected$->any(p | true)]
-                        open TripData(caller:[$AdminHome.caller$], role:[$AdminHome.caller$.myRole], trip:[$tripToView$])
+                        open AdminTripData(caller:[$AdminHome.caller$], role:[$AdminHome.caller$.myRole], trip:[$AdminHome.allTrips.selected$])
                     }catch(SecurityException){
                         notification(['Message'], ['You Cannot View Information About This Trip'], [500])
                     }

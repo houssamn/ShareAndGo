@@ -1,0 +1,47 @@
+Window ViewZones {
+
+Person caller
+
+    Label ZoneInfo_L {
+        String text := ['Zone Information']
+    }
+
+    Table ZoneInfo{
+        Set(Zone) rows := [Zone.allInstances()->asSet()]
+        columns {
+            ['Zone'] : Label zone {
+                String text
+                event onView(text) {
+                    try {
+                        text := [$ZoneInfo.row$.zname]
+                    }catch(SecurityException){
+                        text := ['****']
+                    }
+                }
+            }
+
+            ['Locations'] : Label locs {
+                String text
+                event onView(text) {
+                    try {
+                        text := [''] 
+                        foreach child in [$ViewZones.ZoneInfo.row$.locations] { 
+                             text := [$text$ + $child$.name + ", "]
+                        }
+                    }catch(SecurityException) {
+                        text := ['****']
+                    }
+                }
+            }
+        }
+    }
+
+    
+   Button Back_B {
+        String text := ['Back']
+        event onClick {
+            back
+        }
+   }
+
+}
