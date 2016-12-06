@@ -60,8 +60,6 @@ Window CreateTrip {
 
     }
 
-
-    //TODO: Table of Locations Till Now (Loc name  &  Zone)
     Label LocationsTable_L {
         String text := ['Locations Till Now']
     }
@@ -118,7 +116,6 @@ Window CreateTrip {
         LocalDateTime value := [null]
     }
 
-    //TODO: Create Trip Button [Finalize]
     Button Confirm_B {
         String text := ['Confirm']
         event onClick {
@@ -128,18 +125,25 @@ Window CreateTrip {
             if [$Price_TF.text$ = null] {
                 notification(['Message'], ['You forgot to enter a price buddy ..'] , [500])
             }else{
-              [$CreateTrip.tripToCreate$.price] := [$Price_TF.text$.toReal()] 
-              [$CreateTrip.tripToCreate$.startDate] := [$Chooser_DF.value$] 
-              [$CreateTrip.tripToCreate$.isCreated] := [true] // This makes it visible to other users now
+                if [ ($CreateTrip.Chooser_DF.value$.oclIsUndefined() ) or   $CreateTrip.Chooser_DF.value$ < LocalDateTime.now() ] { //Check Again that it is a valid start date
+                    notification(['Error'], ['please select a VALID start date'] , [500])
+                }else {
+                    try {
+                        [$CreateTrip.tripToCreate$.price] := [$Price_TF.text$.toReal()] 
+                        [$CreateTrip.tripToCreate$.startDate] := [$Chooser_DF.value$] 
+                        [$CreateTrip.tripToCreate$.isCreated] := [true] // This makes it visible to other users now
+                        notification(['Message'] ,  ['Trip Created Successfully'], [500])
+                        back
+                     }catch(SecurityException){
+                        notification(['Error'], ['An Error Occurred While processing your request. Please contact support.'], [500])
+                     }
+                 }
               
-              //Necessary or creates duplicates ??   
-              //[$CreateTrip.caller$.asDriver] += [$CreateTrip.tripToCreate$]
-              back
             }
         }
     }
 
-    //TODO: Should Delete the current trip
+
     Button Back_B {
             String text := ['Back']
             event onClick {

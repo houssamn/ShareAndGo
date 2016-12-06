@@ -37,10 +37,12 @@ role USER {
         //  -Not Already Part of the trip
         //  -All Locations belong to User's Living Zone
         //  -No More than 3 passengers already in trip
+        //Trip starts later
         add (asPassenger) constrainedBy [ caller = self and
             not self.asPassenger->includes(target) and 
             not target.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() and
-            target.childLocations->size() < 4
+            target.childLocations->size() < 4 and
+            target.startDate >= LocalDateTime.now()
         ]
 
 
@@ -79,9 +81,11 @@ role USER {
         //  -not already in trip
         //  -alll locations belong to user's livin zone
         //  -no more than 3 passengers already
+        // Trip starts later
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
         and self.childLocations->any(v1| not v1.zones->includes(caller.livingZone))->asSet()->isEmpty()
-        and self.childLocations->size() < 4 ]
+        and self.childLocations->size() < 4 
+        and self.startDate >= LocalDateTime.now()]
     }
 
     Complaint {
@@ -129,6 +133,7 @@ role PREMIUM_USER {
             not self.asPassenger->includes(target) and 
             not target.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty()
             and target.childLocations->size() < 4
+            and target.startDate >= LocalDateTime.now()
         ]
 
         add (complaintFrom) constrainedBy [ target.complaintOwner = caller and not
@@ -162,7 +167,8 @@ role PREMIUM_USER {
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
         and not ( self.driver = caller)
         and not self.childLocations->any(k|k.zones->includes(caller.livingZone))->asSet()->isEmpty() 
-        and self.childLocations->size() < 4 ]
+        and self.childLocations->size() < 4 
+        and self.startDate > LocalDateTime.now()]
 
         create 
 
@@ -181,7 +187,8 @@ role PREMIUM_USER {
 
         update(isCreated) 
 
-        update(startDate) constrainedBy [not(self.isCreated) and self.driver = caller]
+        update(startDate) constrainedBy [not(self.isCreated) and self.driver = caller
+                                           and value >= LocalDateTime.now() ]
 
 
         //Allow the User to delete the trip if it is still not published (i.e. aborted create Trip mode)
