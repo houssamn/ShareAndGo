@@ -139,6 +139,16 @@ Window LoginWindow {
                 [$person4$.password] := ['secret']
                 [$person4$.myRole] := [Role::ADMIN]
                 [$person4$.livingZone] := [$zone3$]
+
+
+                person5 := new Person
+                [$person5$.firstName] := ['random']
+                [$person5$.lastName] := ['person']
+                [$person5$.username] := ['random']
+                [$person5$.password] := ['random']
+                [$person5$.myRole] := [Role::PREMIUM_USER]
+                [$person5$.livingZone] := [$zone2$]
+
             }else {
                 notification(['Message'], ['Already Initialized. Clear the old DB First'] ,[500])
             }

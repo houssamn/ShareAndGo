@@ -170,11 +170,15 @@ role PREMIUM_USER {
 
         create 
 
+
+        //We could change the last condition to the following, but it makes it harder for testing (Check readme test case 2)
+        // or not (caller.asPassenger->any(v1|v1.chilLocations->includes(target) and v1.starDate < LocalDateTime.now())->asSet()->isEmpty() )
+        // This makes the check for visited locations to occur in the PAST
         add(childLocations) constrainedBy [not(self.isCreated) and (self.driver = caller)  
                                 and not(self.childLocations->includes(target)) 
                                 and (target.zones->includes(caller.livingZone) 
                                 or caller.asPassenger.childLocations->includes(target) ) ]  
-
+                                
 
 
         remove(childLocations) constrainedBy [not(self.isCreated) and self.driver = caller]
