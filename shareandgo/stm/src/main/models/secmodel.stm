@@ -41,7 +41,7 @@ role USER {
         add (asPassenger) constrainedBy [ caller = self and
             not self.asPassenger->includes(target) and 
             not target.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty() and
-            target.childLocations->size() < 4 and
+            target.passengers->size() < 4 and
             target.startDate >= LocalDateTime.now()
         ]
 
@@ -64,8 +64,6 @@ role USER {
     Location {
         read
     }
-    
-
 
     Trip {
 
@@ -84,7 +82,7 @@ role USER {
         // Trip starts later
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
         and self.childLocations->any(v1| not v1.zones->includes(caller.livingZone))->asSet()->isEmpty()
-        and self.childLocations->size() < 4 
+        and self.passengers->size() < 4 
         and self.startDate >= LocalDateTime.now()]
     }
 
@@ -132,7 +130,7 @@ role PREMIUM_USER {
             not (target.driver = caller) and
             not self.asPassenger->includes(target) and 
             not target.childLocations->any(v1| v1.zones->includes(caller.livingZone))->asSet()->isEmpty()
-            and target.childLocations->size() < 4
+            and target.passengers->size() < 4
             and target.startDate >= LocalDateTime.now()
         ]
 
@@ -167,7 +165,7 @@ role PREMIUM_USER {
         add (passengers) constrainedBy [ target = caller and not self.passengers->includes(target) 
         and not ( self.driver = caller)
         and not self.childLocations->any(k|k.zones->includes(caller.livingZone))->asSet()->isEmpty() 
-        and self.childLocations->size() < 4 
+        and self.passengers->size() < 4 
         and self.startDate > LocalDateTime.now()]
 
         create 
@@ -244,8 +242,8 @@ role ADMIN {
         //4th-5th lines : Prmoting A UserCondition
         //6th line, make sure user has normal priveleges and not already banned
         update(myRole) constrainedBy [ ( value = Role::BANNED_USER and                  
-            ( (self.myRole = Role::USER and self.complaintAbout->size() > 2) or
-              (self.myRole = Role::PREMIUM_USER and self.complaintAbout->size() > 4) ))       
+            ( (self.myRole = Role::USER and self.complaintAbout->size() >= 2) or
+              (self.myRole = Role::PREMIUM_USER and self.complaintAbout->size() >= 4) ))       
             or ((value = Role::PREMIUM_USER)  and                               
              ( self.asDriver->union(self.asPassenger)->size() - self.complaintAbout.associatedTrip->size()  >= 4  ) 
              and (self.myRole = Role::USER)  )]

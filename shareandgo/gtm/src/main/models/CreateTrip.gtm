@@ -119,8 +119,6 @@ Window CreateTrip {
     Button Confirm_B {
         String text := ['Confirm']
         event onClick {
-            //Do Preliminary Checks ( Maybe in Security Model)
-
             //Set Price Value
             if [$Price_TF.text$ = null] {
                 notification(['Message'], ['You forgot to enter a price buddy ..'] , [500])
